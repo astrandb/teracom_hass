@@ -8,7 +8,7 @@
   "ssdp": [],
   "zeroconf": [],
   "homekit": {},
-  "dependencies": [],
+  "after_dependencies": ["rest"],
   "codeowners": [
     "@astrandb"
   ]
