@@ -2,7 +2,7 @@
   "domain": "teracom",
   "name": "Teracom TCW",
   "config_flow": true,
-  "documentation": "https://www.home-assistant.io/integrations/teracom",
+  "documentation": "https://github.com/astrandb/teracom/Readme.md",
   "requirements": [],
   "version": "0.1.1",
   "ssdp": [],
