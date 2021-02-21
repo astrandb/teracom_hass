@@ -1,8 +1,8 @@
 """The Teracom TCW integration."""
 import asyncio
+from datetime import timedelta
 import logging
 import xml.etree.ElementTree as ET
-from datetime import timedelta
 
 from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import ConfigEntry
@@ -32,9 +32,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Teracom TCW from a config entry."""
 
     async def poll_update(event_time):
-        _LOGGER.debug("Entered pollupdate")
+        #  _LOGGER.debug("Entered pollupdate")
         await _hassdata["api"].get_data()
-        _LOGGER.debug("Calling dispatcher_send")
+        #  _LOGGER.debug("Calling dispatcher_send")
         dispatcher_send(hass, SIGNAL_UPDATE_TERACOM)
 
     hass.data[DOMAIN][entry.entry_id] = {}
@@ -62,16 +62,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _hassdata["xml"] = rest.data
     root = ET.fromstring(rest.data)
     _hassdata["id"] = root.find("ID").text.replace(":", "")
-    _hassdata["device"] = root.find("Device").text
-    _hassdata["hostname"] = root.find("Hostname").text
+    _hassdata["device"] = root.find("Device").text.strip()
+    _hassdata["hostname"] = root.find("Hostname").text.strip().title()
     _hassdata["fw"] = root.find("FW").text
-    _LOGGER.info("setup_entry: %s", entry.entry_id)
+    _LOGGER.debug("setup_entry: %s", entry.entry_id)
 
     device_info = {
         "connections": {(CONNECTION_NETWORK_MAC, _hassdata["id"])},
         "manufacturer": "Teracom",
-        "model": "TCW122B-CM",
-        "name": "Remote IO Module",
+        "model": _hassdata["device"],
+        "name": _hassdata["hostname"],
         "sw_version": _hassdata["fw"],
         "config_entry_id": entry.entry_id,
     }
