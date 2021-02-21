@@ -2,4 +2,5 @@
 
 DOMAIN = "teracom"
 SIGNAL_UPDATE_TERACOM = "signal_update_teracom"
+SUPPORTED_MODELS = {"TCW122B-CM"}
 VERSION = "0.1.2"

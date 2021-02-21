@@ -1,8 +1,8 @@
 """The Teracom TCW integration."""
 import asyncio
-from datetime import timedelta
 import logging
 import xml.etree.ElementTree as ET
+from datetime import timedelta
 
 from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import ConfigEntry

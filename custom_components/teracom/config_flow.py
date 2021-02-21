@@ -6,7 +6,7 @@ import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.components.rest.data import RestData
 
-from .const import DOMAIN  # pylint:disable=unused-import
+from .const import DOMAIN, SUPPORTED_MODELS  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -72,6 +72,13 @@ async def validate_input(hass: core.HomeAssistant, data):
     root = ET.fromstring(hub._xmldata)
     if root.tag == "Monitor":
         _LOGGER.debug("ID: %s", root.find("ID").text)
+
+    _LOGGER.debug("Device: %s", root.find("Device").text.strip())
+
+    if root.find("Device").text.strip() not in SUPPORTED_MODELS:
+        _LOGGER.debug("Model not supported: %s", root.find("Device").text.strip())
+        raise ModelNotSupported
+
     mac = root.find("ID").text.replace(":", "")
     hostname = root.find("Hostname").text.strip().title()
     title = hostname + " - " + mac
@@ -88,10 +95,12 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         if user_input is None:
             return self.async_show_form(
-                step_id="user", data_schema=STEP_USER_DATA_SCHEMA
+                step_id="user",
+                data_schema=STEP_USER_DATA_SCHEMA,
             )
 
         errors = {}
+        placeholders = {}
 
         try:
             info = await validate_input(self.hass, user_input)
@@ -101,12 +110,19 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except InvalidAuth:
             errors["base"] = "invalid_auth"
+        except ModelNotSupported:
+            _LOGGER.warning("Model not supported")
+            errors["host"] = "model_not_supported"
+            placeholders["model"] = "xxy"  # Does not work
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "unknown"
 
         return self.async_show_form(
-            step_id="user", data_schema=STEP_USER_DATA_SCHEMA, errors=errors
+            step_id="user",
+            data_schema=STEP_USER_DATA_SCHEMA,
+            errors=errors,
+            description_placeholders={"model": "QQQ"},  # Does not work
         )
 
 
@@ -116,3 +132,7 @@ class CannotConnect(exceptions.HomeAssistantError):
 
 class InvalidAuth(exceptions.HomeAssistantError):
     """Error to indicate there is invalid auth."""
+
+
+class ModelNotSupported(exceptions.HomeAssistantError):
+    """Error to indicate model not supported."""

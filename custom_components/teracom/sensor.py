@@ -1,7 +1,5 @@
 """Sensors"""
-# from homeassistant.helpers.entity import Entity
-# from homeassistant.core import callback
-# from homeassistant.helpers.dispatcher import async_dispatcher_connect
+#  import logging
 from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
@@ -11,8 +9,9 @@ from homeassistant.const import (
     VOLT,
 )
 
-# from .const import DOMAIN, SIGNAL_UPDATE_TERACOM
 from .entity import TcwEntity
+
+#  _LOGGER = logging.getLogger(__name__)
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
@@ -95,5 +94,10 @@ class TcwSensor(TcwEntity):
     @property
     def state(self):
         """Return the state of the sensor."""
-        # self._state = self._api.heater_temp
         return self._data.get(self._data_key)
+
+    @property
+    def entity_registry_enabled_default(self):
+        """Disable sensor if not used."""
+        #  _LOGGER.debug("Enable sensor: %s", self._data[self._data_key])
+        return self._data[self._data_key] is not None
