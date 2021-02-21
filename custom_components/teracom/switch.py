@@ -13,12 +13,14 @@ _LOGGER = logging.getLogger(__name__)
 async def async_setup_entry(hass, config_entry, async_add_entities):
     def get_entities():
         sensors = []
-        sensors.append(
-            TcwSwitch(hass, config_entry, "relay1", "relay1", "Relay 1", None, None)
-        )
-        sensors.append(
-            TcwSwitch(hass, config_entry, "relay2", "relay2", "Relay 2", None, None)
-        )
+        if config_entry.data["model"] == "TCW122B-CM":
+            nr = range(1, 3)
+        elif config_entry.data["model"] == "TCW181B-CM":
+            nr = range(1, 9)
+        for no in nr:
+            sensors.append(
+                TcwSwitch(hass, config_entry, "relay" + str(no), "relay" + str(no), "Relay " + str(no), None, None)
+            )
         return sensors
 
     async_add_entities(await hass.async_add_job(get_entities), True)

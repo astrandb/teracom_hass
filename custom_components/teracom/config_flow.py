@@ -73,16 +73,16 @@ async def validate_input(hass: core.HomeAssistant, data):
     if root.tag == "Monitor":
         _LOGGER.debug("ID: %s", root.find("ID").text)
 
-    _LOGGER.debug("Device: %s", root.find("Device").text.strip())
-
-    if root.find("Device").text.strip() not in SUPPORTED_MODELS:
-        _LOGGER.debug("Model not supported: %s", root.find("Device").text.strip())
+    model = root.find("Device").text.strip()
+    _LOGGER.debug("Device: %s", model)
+    if model not in SUPPORTED_MODELS:
+        _LOGGER.debug("Model not supported: %s", model)
         raise ModelNotSupported
 
     mac = root.find("ID").text.replace(":", "")
     hostname = root.find("Hostname").text.strip().title()
     title = hostname + " - " + mac
-    return {"title": title, "id": mac, "hostname": hostname}
+    return {"title": title, "id": mac, "hostname": hostname, "model": model}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -105,6 +105,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             info = await validate_input(self.hass, user_input)
             await self.async_set_unique_id(info["id"])
+            user_input["model"] = info["model"]
             return self.async_create_entry(title=info["title"], data=user_input)
         except CannotConnect:
             errors["base"] = "cannot_connect"
