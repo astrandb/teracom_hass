@@ -51,12 +51,12 @@ class TcwApi:
     async def set_relay(self, relay_no, to_state):
         method = "GET"
         payload = auth = None
-        # verify_ssl = DEFAULT_VERIFY_SSL
+        verify_ssl = False
         headers = {}
         _ENDPOINT = f"http://{self._host}/status.xml?r{relay_no}={to_state}"
 
         rest = RestData(
-            self._hass, method, _ENDPOINT, auth, headers, None, payload, None
+            self._hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
@@ -69,12 +69,12 @@ class TcwApi:
     async def get_data(self):
         method = "GET"
         payload = auth = None
-        # verify_ssl = DEFAULT_VERIFY_SSL
+        verify_ssl = False
         headers = {}
         _ENDPOINT = f"http://{self._host}/status.xml"
 
         rest = RestData(
-            self._hass, method, _ENDPOINT, auth, headers, None, payload, None
+            self._hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 

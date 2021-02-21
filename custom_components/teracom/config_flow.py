@@ -31,11 +31,13 @@ class TcwHub:
 
         method = "GET"
         payload = auth = None
-        # verify_ssl = DEFAULT_VERIFY_SSL
+        verify_ssl = False
         headers = {}
         _ENDPOINT = f"http://{self.host}/status.xml"
 
-        rest = RestData(hass, method, _ENDPOINT, auth, headers, None, payload, None)
+        rest = RestData(
+            hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
+        )
         await rest.async_update()
 
         if rest.data is None:
@@ -71,8 +73,9 @@ async def validate_input(hass: core.HomeAssistant, data):
     if root.tag == "Monitor":
         _LOGGER.debug("ID: %s", root.find("ID").text)
     mac = root.find("ID").text.replace(":", "")
-    title = root.find("Device").text + " - " + mac
-    return {"title": title, "id": mac}
+    hostname = root.find("Hostname").text.strip().title()
+    title = hostname + " - " + mac
+    return {"title": title, "id": mac, "hostname": hostname}
 
 
 class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):

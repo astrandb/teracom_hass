@@ -2,4 +2,4 @@
 
 DOMAIN = "teracom"
 SIGNAL_UPDATE_TERACOM = "signal_update_teracom"
-VERSION = "0.1.1"
+VERSION = "0.1.2"

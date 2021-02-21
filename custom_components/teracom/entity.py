@@ -25,13 +25,10 @@ class TcwEntity(Entity):
         unit_of_measurement,
     ):
         """Initialize the sensor."""
-        self._entry_id = entry.entry_id
-        self._unique_id = hass.data[DOMAIN][entry.entry_id]["id"] + "_" + name_short
         self._data = hass.data[DOMAIN][entry.entry_id]
+        self._unique_id = self._data["id"] + "_" + name_short
         self._data_key = data_key
-        self._name_long = (
-            "tcw_" + hass.data[DOMAIN][entry.entry_id]["id"] + "_" + name_long
-        )
+        self._name_long = self._data["hostname"] + " " + name_long
         self._device_class = device_class
         self._unit_of_measurement = unit_of_measurement
 
