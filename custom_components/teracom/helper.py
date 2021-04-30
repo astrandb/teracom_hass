@@ -52,7 +52,9 @@ class TcwApi:
         elif model == "TCW181B-CM":
             self._hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
             for no in range(1, 9):
-                self._hassdata["relay" + str(no)] = root.find("Relay" + str(no)).text == "ON"
+                self._hassdata["relay" + str(no)] = (
+                    root.find("Relay" + str(no)).text == "ON"
+                )
 
     async def set_relay(self, relay_no, to_state):
         method = "GET"

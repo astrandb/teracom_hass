@@ -9,12 +9,24 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         if config_entry.data["model"] == "TCW122B-CM":
             sensors.append(
                 TcwBinarySensor(
-                    hass, config_entry, "digital1", "dig1", "Digital Input 1", None, None
+                    hass,
+                    config_entry,
+                    "digital1",
+                    "dig1",
+                    "Digital Input 1",
+                    None,
+                    None,
                 )
             )
             sensors.append(
                 TcwBinarySensor(
-                    hass, config_entry, "digital2", "dig2", "Digital Input 2", None, None
+                    hass,
+                    config_entry,
+                    "digital2",
+                    "dig2",
+                    "Digital Input 2",
+                    None,
+                    None,
                 )
             )
         elif config_entry.data["model"] == "TCW181B-CM":

@@ -19,7 +19,15 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
             nr = range(1, 9)
         for no in nr:
             sensors.append(
-                TcwSwitch(hass, config_entry, "relay" + str(no), "relay" + str(no), "Relay " + str(no), None, None)
+                TcwSwitch(
+                    hass,
+                    config_entry,
+                    "relay" + str(no),
+                    "relay" + str(no),
+                    "Relay " + str(no),
+                    None,
+                    None,
+                )
             )
         return sensors
 
