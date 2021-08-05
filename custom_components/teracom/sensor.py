@@ -4,9 +4,9 @@ from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
     DEVICE_CLASS_VOLTAGE,
+    ELECTRIC_POTENTIAL_VOLT,
     PERCENTAGE,
     TEMP_CELSIUS,
-    VOLT,
 )
 
 from .entity import TcwEntity
@@ -70,7 +70,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "volt1",
                     "Voltage 1",
                     DEVICE_CLASS_VOLTAGE,
-                    VOLT,
+                    ELECTRIC_POTENTIAL_VOLT,
                 )
             )
             sensors.append(
@@ -81,7 +81,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "volt2",
                     "Voltage 2",
                     DEVICE_CLASS_VOLTAGE,
-                    VOLT,
+                    ELECTRIC_POTENTIAL_VOLT,
                 )
             )
         return sensors
