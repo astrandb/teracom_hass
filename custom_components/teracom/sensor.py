@@ -8,6 +8,7 @@ from homeassistant.const import (
     PERCENTAGE,
     TEMP_CELSIUS,
 )
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT
 
 from .entity import TcwEntity
 
@@ -26,7 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "temp1",
                     "Temperature 1",
                     DEVICE_CLASS_TEMPERATURE,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     TEMP_CELSIUS,
                 )
             )
@@ -38,7 +39,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "temp2",
                     "Temperature 2",
                     DEVICE_CLASS_TEMPERATURE,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     TEMP_CELSIUS,
                 )
             )
@@ -50,7 +51,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "hum1",
                     "Humidity 1",
                     DEVICE_CLASS_HUMIDITY,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     PERCENTAGE,
                 )
             )
@@ -62,7 +63,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "hum2",
                     "Humidity 2",
                     DEVICE_CLASS_HUMIDITY,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     PERCENTAGE,
                 )
             )
@@ -74,7 +75,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "volt1",
                     "Voltage 1",
                     DEVICE_CLASS_VOLTAGE,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     ELECTRIC_POTENTIAL_VOLT,
                 )
             )
@@ -86,7 +87,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "volt2",
                     "Voltage 2",
                     DEVICE_CLASS_VOLTAGE,
-                    "measurement",
+                    STATE_CLASS_MEASUREMENT,
                     ELECTRIC_POTENTIAL_VOLT,
                 )
             )

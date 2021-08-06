@@ -31,7 +31,7 @@ class TcwEntity(Entity):
         self._data_key = data_key
         self._name_long = self._data["hostname"] + " " + name_long
         self._device_class = device_class
-        self._state_class = state_class
+        self._attr_state_class = state_class
         self._unit_of_measurement = unit_of_measurement
 
     async def async_added_to_hass(self):
@@ -71,10 +71,6 @@ class TcwEntity(Entity):
     @property
     def device_class(self):
         return self._device_class
-
-    @property
-    def state_class(self):
-        return self._state_class
 
     @property
     def unit_of_measurement(self):
