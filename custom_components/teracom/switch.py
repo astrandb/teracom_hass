@@ -27,6 +27,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "Relay " + str(no),
                     None,
                     None,
+                    None,
                 )
             )
         return sensors

@@ -16,6 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "Digital Input 1",
                     None,
                     None,
+                    None,
                 )
             )
             sensors.append(
@@ -25,6 +26,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "digital2",
                     "dig2",
                     "Digital Input 2",
+                    None,
                     None,
                     None,
                 )
