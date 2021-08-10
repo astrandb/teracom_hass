@@ -8,7 +8,7 @@ from homeassistant.const import (
     PERCENTAGE,
     TEMP_CELSIUS,
 )
-from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
 
 from .entity import TcwEntity
 
@@ -96,7 +96,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     async_add_entities(await hass.async_add_job(get_entities), True)
 
 
-class TcwSensor(TcwEntity):
+class TcwSensor(TcwEntity, SensorEntity):
     """Representation of a sensor."""
 
     @property
