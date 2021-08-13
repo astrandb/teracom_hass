@@ -77,7 +77,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     _LOGGER.debug("Device: %s", model)
     if model not in SUPPORTED_MODELS:
         _LOGGER.debug("Model not supported: %s", model)
-        raise ModelNotSupported
+        raise ModelNotSupported(model)
 
     mac = root.find("ID").text.replace(":", "")
     hostname = root.find("Hostname").text.strip().title()
@@ -111,10 +111,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             errors["base"] = "cannot_connect"
         except InvalidAuth:
             errors["base"] = "invalid_auth"
-        except ModelNotSupported:
-            _LOGGER.warning("Model not supported")
+        except ModelNotSupported as mns:
+            _LOGGER.warning("Model %s not supported", mns.args[0])
             errors["host"] = "model_not_supported"
-            placeholders["model"] = "xxy"  # Does not work
+            placeholders["model"] = mns.args[0]  # Does not work
         except Exception:  # pylint: disable=broad-except
             _LOGGER.exception("Unexpected exception")
             errors["base"] = "unknown"
@@ -123,7 +123,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
-            description_placeholders={"model": "QQQ"},  # Does not work
+            description_placeholders=placeholders,  # Does not work
         )
 
 
