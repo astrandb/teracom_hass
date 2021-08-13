@@ -1,5 +1,6 @@
 """Sensors"""
 #  import logging
+from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
 from homeassistant.const import (
     DEVICE_CLASS_HUMIDITY,
     DEVICE_CLASS_TEMPERATURE,
@@ -8,7 +9,6 @@ from homeassistant.const import (
     PERCENTAGE,
     TEMP_CELSIUS,
 )
-from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
 
 from .entity import TcwEntity
 
