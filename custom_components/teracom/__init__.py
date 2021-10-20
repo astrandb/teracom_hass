@@ -16,8 +16,6 @@ from .helper import TcwApi
 
 _LOGGER = logging.getLogger(__name__)
 
-# TODO List the platforms that you want to support.
-# For your initial PR, limit it to 1 platform.
 PLATFORMS = ["sensor", "binary_sensor", "switch"]
 SCAN_INTERVAL = timedelta(seconds=15)
 
@@ -40,7 +38,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     hass.data[DOMAIN][entry.entry_id] = {}
     _hassdata = hass.data[DOMAIN][entry.entry_id]
 
-    # TODO Store an API object for your platforms to access
     config = entry.data
     _hassdata["api"] = TcwApi(
         hass, entry, config.get("host"), config.get("user"), config.get("password")
@@ -49,16 +46,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     payload = auth = None
     # verify_ssl = DEFAULT_VERIFY_SSL
     headers = {}
-    _ENDPOINT = f"http://{config.get('host')}/status.xml"
+    endpoint = f"http://{config.get('host')}/status.xml"
 
-    rest = RestData(hass, method, _ENDPOINT, auth, headers, None, payload, None)
+    rest = RestData(hass, method, endpoint, auth, headers, None, payload, None)
     await rest.async_update()
 
     if rest.data is None:
         _LOGGER.error("Unable to fetch data from device - async-setup_entry()")
         return False
-    # TODO process rest.data to find static values as device_name etc
 
+    # Process rest.data to find static values as device_name etc
     _hassdata["xml"] = rest.data
     root = ET.fromstring(rest.data)
     _hassdata["id"] = root.find("ID").text.replace(":", "")
@@ -74,6 +71,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         "name": _hassdata["hostname"],
         "sw_version": _hassdata["fw"],
         "config_entry_id": entry.entry_id,
+        "configuration_url": f"http://{config.get('host')}",
     }
     _LOGGER.debug("Adding or updating teracom device %s", _hassdata["id"])
     device_registry = await hass.helpers.device_registry.async_get_registry()
