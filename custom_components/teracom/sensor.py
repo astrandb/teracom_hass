@@ -111,3 +111,17 @@ class TcwSensor(TcwEntity, SensorEntity):
         """Disable sensor if not used."""
         #  _LOGGER.debug("Enable sensor: %s", self._data[self._data_key])
         return self._data[self._data_key] is not None
+
+class TcwSensorSNMP(TcwEntity, SensorEntity):
+    """Representation of a sensor."""
+
+    @property
+    def state(self):
+        """Return the state of the sensor."""
+        return self._data.get(self._data_key)
+
+    @property
+    def entity_registry_enabled_default(self):
+        """Disable sensor if not used."""
+        #  _LOGGER.debug("Enable sensor: %s", self._data[self._data_key])
+        return self._data[self._data_key] is not None

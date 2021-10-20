@@ -5,8 +5,20 @@ import xml.etree.ElementTree as ET
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.components.rest.data import RestData
+import pysnmp.hlapi.asyncio as hlapi
+from pysnmp.hlapi.asyncio import (
+    CommunityData,
+    ContextData,
+    ObjectIdentity,
+    ObjectType,
+    SnmpEngine,
+    UdpTransportTarget,
+    UsmUserData,
+    getCmd,
+)
 
-from .const import DOMAIN, SUPPORTED_MODELS  # pylint:disable=unused-import
+
+from .const import DOMAIN, SNMP_ONLY_MODELS, SUPPORTED_MODELS  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -24,10 +36,67 @@ class TcwHub:
     def __init__(self, host):
         """Initialize."""
         self.host = host
-        self.xmldata = ""
+        self._xmldata = ""
+        self._product_name = ""
+        self._mac = ""
+        self._hostname = ""
 
     async def authenticate(self, hass, username, password) -> bool:
         """Test if we can authenticate with the host."""
+        request_args = [
+            SnmpEngine(),
+            CommunityData('public', mpModel=0),
+            UdpTransportTarget((self.host, 161)),
+            ContextData(),
+        ]
+        OID_PRODUCT_NAME = '1.3.6.1.4.1.38783.1.1.0'
+        OID_MAC = '1.3.6.1.4.1.38783.2.1.4.0'
+        OID_HOST_NAME = '1.3.6.1.4.1.38783.2.1.7.0'
+
+        errindication, errorStatus, errorIndex, res_table = await getCmd(
+            *request_args, ObjectType(ObjectIdentity(OID_PRODUCT_NAME))
+        )
+        if errindication:  # SNMP engine errors
+            _LOGGER.error("ErrIndication: %s", errindication)
+            return False
+        if errorStatus:  # SNMP agent errors
+            _LOGGER.error("errorStatus: %s at %s", errorStatus.prettyPrint(), res_table[int(errorIndex)-1] if errorIndex else '?')
+            return False
+
+        for res in res_table:
+            _LOGGER.debug("Result: %s", res[1])
+            self._product_name = res[1].asOctets().decode("utf-8")
+
+        if self._product_name in SNMP_ONLY_MODELS:
+            errindication, errorStatus, errorIndex, res_table = await getCmd(
+                *request_args, ObjectType(ObjectIdentity(OID_HOST_NAME))
+            )
+            if errindication:  # SNMP engine errors
+                _LOGGER.error("ErrIndication: %s", errindication)
+                return False
+            if errorStatus:  # SNMP agent errors
+                _LOGGER.error("errorStatus: %s at %s", errorStatus.prettyPrint(), res_table[int(errorIndex)-1] if errorIndex else '?')
+                return False
+
+            for res in res_table:
+                _LOGGER.debug("Hostname: %s", res[1])
+                self._hostname = res[1].asOctets().decode("utf-8").strip()
+
+            errindication, errorStatus, errorIndex, res_table = await getCmd(
+                *request_args, ObjectType(ObjectIdentity(OID_MAC))
+            )
+            if errindication:  # SNMP engine errors
+                _LOGGER.error("ErrIndication: %s", errindication)
+                return False
+            if errorStatus:  # SNMP agent errors
+                _LOGGER.error("errorStatus: %s at %s", errorStatus.prettyPrint(), res_table[int(errorIndex)-1] if errorIndex else '?')
+                return False
+
+            for res in res_table:
+                self._mac = res[1].asOctets().hex().upper()
+                _LOGGER.debug("MAC: %s", self._mac)
+
+            return True
 
         method = "GET"
         payload = auth = None
@@ -66,6 +135,13 @@ async def validate_input(hass: core.HomeAssistant, data):
     # throw CannotConnect
     # If the authentication is wrong:
     # InvalidAuth
+
+    model = hub._product_name
+    _LOGGER.debug("Model: [%s]", model)
+    if model in SNMP_ONLY_MODELS:
+        _LOGGER.debug("Model not fully supported yet: %s", model)
+        title = hub._hostname + " - " + hub._mac
+        return {"title": title, "id": hub._mac, "hostname": hub._hostname, "model": hub._product_name}
 
     # Return info that you want to store in the config entry.
     root = ET.fromstring(hub.xmldata)
