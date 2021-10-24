@@ -4,7 +4,7 @@ import logging
 from homeassistant.core import callback
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.entity import DeviceInfo, Entity
 
 from .const import DOMAIN, SIGNAL_UPDATE_TERACOM
 
@@ -59,10 +59,10 @@ class TcwEntity(Entity):
         return self._unique_id
 
     @property
-    def device_info(self):
-        return {
-            "connections": {(CONNECTION_NETWORK_MAC, self._data["id"])},
-        }
+    def device_info(self) -> DeviceInfo:
+        return DeviceInfo(
+            connections={(CONNECTION_NETWORK_MAC, self._data["id"])},
+        )
 
     @property
     def should_poll(self):
