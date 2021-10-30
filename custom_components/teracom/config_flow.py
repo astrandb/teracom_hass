@@ -24,7 +24,7 @@ class TcwHub:
     def __init__(self, host):
         """Initialize."""
         self.host = host
-        self._xmldata = ""
+        self.xmldata = ""
 
     async def authenticate(self, hass, username, password) -> bool:
         """Test if we can authenticate with the host."""
@@ -33,18 +33,18 @@ class TcwHub:
         payload = auth = None
         verify_ssl = False
         headers = {}
-        _ENDPOINT = f"http://{self.host}/status.xml"
+        endpoint = f"http://{self.host}/status.xml"
 
         rest = RestData(
-            hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
+            hass, method, endpoint, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
         if rest.data is None:
             _LOGGER.error("Unable to fetch data from device")
             return False
-        # TODO process rest.data to find device name etc
-        self._xmldata = rest.data
+
+        self.xmldata = rest.data
 
         return True
 
@@ -54,7 +54,6 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
     """
-    # TODO validate the data can be used to set up a connection.
 
     hub = TcwHub(data["host"])
 
@@ -69,7 +68,7 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    root = ET.fromstring(hub._xmldata)
+    root = ET.fromstring(hub.xmldata)
     if root.tag == "Monitor":
         _LOGGER.debug("ID: %s", root.find("ID").text)
 

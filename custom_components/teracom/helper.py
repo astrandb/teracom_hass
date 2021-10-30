@@ -10,6 +10,8 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class TcwApi:
+    """TCW API Class."""
+
     def __init__(self, hass, entry, host, user, password):
         self._hass = hass
         self._hassdata = hass.data[DOMAIN][entry.entry_id]
@@ -19,6 +21,7 @@ class TcwApi:
         return
 
     def parse_response(self, data):
+        """Parse the response."""
         self._hassdata["xml"] = data
         root = ET.fromstring(data)
         model = root.find("Device").text.strip()
@@ -51,20 +54,21 @@ class TcwApi:
             self._hassdata["relay2"] = root.find("Relay2").text == "ON"
         elif model == "TCW181B-CM":
             self._hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
-            for no in range(1, 9):
-                self._hassdata["relay" + str(no)] = (
-                    root.find("Relay" + str(no)).text == "ON"
+            for nox in range(1, 9):
+                self._hassdata["relay" + str(nox)] = (
+                    root.find("Relay" + str(nox)).text == "ON"
                 )
 
     async def set_relay(self, relay_no, to_state):
+        """Set the relay state."""
         method = "GET"
         payload = auth = None
         verify_ssl = False
         headers = {}
-        _ENDPOINT = f"http://{self._host}/status.xml?r{relay_no}={to_state}"
+        endpoint = f"http://{self._host}/status.xml?r{relay_no}={to_state}"
 
         rest = RestData(
-            self._hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
+            self._hass, method, endpoint, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
@@ -75,14 +79,15 @@ class TcwApi:
         return
 
     async def get_data(self):
+        """Get the data from the device."""
         method = "GET"
         payload = auth = None
         verify_ssl = False
         headers = {}
-        _ENDPOINT = f"http://{self._host}/status.xml"
+        endpoint = f"http://{self._host}/status.xml"
 
         rest = RestData(
-            self._hass, method, _ENDPOINT, auth, headers, None, payload, verify_ssl
+            self._hass, method, endpoint, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 

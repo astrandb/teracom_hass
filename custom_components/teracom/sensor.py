@@ -16,6 +16,8 @@ from .entity import TcwEntity
 
 
 async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up the entry."""
+
     def get_entities():
         sensors = []
         if config_entry.data["model"] == "TCW122B-CM":

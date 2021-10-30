@@ -33,6 +33,7 @@ class TcwEntity(Entity):
         self._device_class = device_class
         self._attr_state_class = state_class
         self._unit_of_measurement = unit_of_measurement
+        self._remove_dispatcher = None
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -78,5 +79,6 @@ class TcwEntity(Entity):
         return self._unit_of_measurement
 
     async def async_update(self):
+        """Update the state."""
         #  _LOGGER.debug(self.name + " async_update 1 %s", self._api.heater_temperature)
         return
