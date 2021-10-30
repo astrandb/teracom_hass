@@ -1,6 +1,12 @@
 {
   "name": "Teracom Remote Monitoring",
-  "domains": ["binary_sensor", "sensor", "switch"],
-  "homeassistant": "0.118.0",
-  "iot_class": ["Local Poll"]
+  "domains": [
+    "binary_sensor",
+    "sensor",
+    "switch"
+  ],
+  "homeassistant": "2021.11.0",
+  "iot_class": [
+    "Local Poll"
+  ]
 }
