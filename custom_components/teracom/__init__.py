@@ -7,6 +7,7 @@ from datetime import timedelta
 from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
@@ -49,8 +50,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     headers = {}
     endpoint = f"http://{config.get('host')}/status.xml"
 
-    rest = RestData(hass, method, endpoint, auth, headers, None, payload, None)
-    await rest.async_update()
+    try:
+        rest = RestData(hass, method, endpoint, auth, headers, None, payload, None)
+        await rest.async_update()
+    except Exception as err:
+        raise ConfigEntryNotReady from err
 
     if rest.data is None:
         _LOGGER.error("Unable to fetch data from device - async-setup_entry()")
