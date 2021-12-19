@@ -8,5 +8,7 @@
   "homeassistant": "2021.11.0",
   "iot_class": [
     "Local Poll"
-  ]
+  ],
+  "zip_release": true,
+  "filename": "teracom_hass.zip"
 }
