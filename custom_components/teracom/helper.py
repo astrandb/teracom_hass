@@ -1,6 +1,7 @@
 """Helpers for Teracom integration"""
 import logging
 import xml.etree.ElementTree as ET
+from xml.etree.ElementTree import ParseError
 
 from homeassistant.components.rest.data import RestData
 
@@ -23,41 +24,46 @@ class TcwApi:
     def parse_response(self, data):
         """Parse the response."""
         self._hassdata["xml"] = data
-        root = ET.fromstring(data)
-        model = root.find("Device").text.strip()
-        if model == "TCW122B-CM":
-            self._hassdata["temperature1"] = (
-                None
-                if root.find("Temperature1").text == "---"
-                else float(root.find("Temperature1").text[0:-2])
-            )
-            self._hassdata["temperature2"] = (
-                None
-                if root.find("Temperature2").text == "---"
-                else float(root.find("Temperature2").text[0:-2])
-            )
-            self._hassdata["humidity1"] = (
-                None
-                if root.find("Humidity1").text == "---"
-                else float(root.find("Humidity1").text[0:-1])
-            )
-            self._hassdata["humidity2"] = (
-                None
-                if root.find("Humidity2").text == "---"
-                else float(root.find("Humidity2").text[0:-1])
-            )
-            self._hassdata["voltage1"] = float(root.find("AnalogInput1").text[0:-1])
-            self._hassdata["voltage2"] = float(root.find("AnalogInput2").text[0:-1])
-            self._hassdata["digital1"] = root.find("DigitalInput1").text == "CLOSED"
-            self._hassdata["digital2"] = root.find("DigitalInput2").text == "CLOSED"
-            self._hassdata["relay1"] = root.find("Relay1").text == "ON"
-            self._hassdata["relay2"] = root.find("Relay2").text == "ON"
-        elif model == "TCW181B-CM":
-            self._hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
-            for nox in range(1, 9):
-                self._hassdata["relay" + str(nox)] = (
-                    root.find("Relay" + str(nox)).text == "ON"
+        try:
+            root = ET.fromstring(data)
+            model = root.find("Device").text.strip()
+            if model == "TCW122B-CM":
+                self._hassdata["temperature1"] = (
+                    None
+                    if root.find("Temperature1").text == "---"
+                    else float(root.find("Temperature1").text[0:-2])
                 )
+                self._hassdata["temperature2"] = (
+                    None
+                    if root.find("Temperature2").text == "---"
+                    else float(root.find("Temperature2").text[0:-2])
+                )
+                self._hassdata["humidity1"] = (
+                    None
+                    if root.find("Humidity1").text == "---"
+                    else float(root.find("Humidity1").text[0:-1])
+                )
+                self._hassdata["humidity2"] = (
+                    None
+                    if root.find("Humidity2").text == "---"
+                    else float(root.find("Humidity2").text[0:-1])
+                )
+                self._hassdata["voltage1"] = float(root.find("AnalogInput1").text[0:-1])
+                self._hassdata["voltage2"] = float(root.find("AnalogInput2").text[0:-1])
+                self._hassdata["digital1"] = root.find("DigitalInput1").text == "CLOSED"
+                self._hassdata["digital2"] = root.find("DigitalInput2").text == "CLOSED"
+                self._hassdata["relay1"] = root.find("Relay1").text == "ON"
+                self._hassdata["relay2"] = root.find("Relay2").text == "ON"
+            elif model == "TCW181B-CM":
+                self._hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
+                for nox in range(1, 9):
+                    self._hassdata["relay" + str(nox)] = (
+                        root.find("Relay" + str(nox)).text == "ON"
+                    )
+        except ParseError as ex:
+            _LOGGER.error("XML parsing error: %s - %s", ex.code, ex.position)
+        except Exception as ex:
+            _LOGGER.error("Cannot parse data: %s", ex)
 
     async def set_relay(self, relay_no, to_state):
         """Set the relay state."""
