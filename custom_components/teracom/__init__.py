@@ -8,7 +8,7 @@ from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
-from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
@@ -70,7 +70,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _LOGGER.debug("setup_entry: %s", entry.entry_id)
 
     device_info = DeviceInfo(
-        connections={(CONNECTION_NETWORK_MAC, _hassdata["id"])},
+        connections={(dr.CONNECTION_NETWORK_MAC, _hassdata["id"])},
         manufacturer="Teracom",
         model=_hassdata["device"],
         name=_hassdata["hostname"],
@@ -79,7 +79,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         configuration_url=f"http://{config.get('host')}",
     )
     _LOGGER.debug("Adding or updating teracom device %s", _hassdata["id"])
-    device_registry = await hass.helpers.device_registry.async_get_registry()
+    # device_registry = await hass.helpers.device_registry.async_get_registry()
+    device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(**device_info)
 
     await _hassdata["api"].get_data()
