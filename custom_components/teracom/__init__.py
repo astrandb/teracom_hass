@@ -6,6 +6,7 @@ from datetime import timedelta
 
 from homeassistant.components.rest.data import RestData
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from homeassistant.helpers import device_registry as dr
@@ -18,7 +19,7 @@ from .helper import TcwApi
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor", "binary_sensor", "switch"]
+PLATFORMS = [Platform.BINARY_SENSOR, Platform.SENSOR, Platform.SWITCH]
 SCAN_INTERVAL = timedelta(seconds=15)
 
 
