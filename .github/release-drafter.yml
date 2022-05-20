@@ -14,9 +14,14 @@ categories:
       - "bug"
   - title: "Dependencies"
     labels:
-      - "dependencies"
+      - "dependency"
   - title: "Maintenance"
-    label: "chore"
+    labels: 
+      - "chore"
+      - "maintenance"
+  - title: "Translations"
+    labels:
+      - "translation"
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
@@ -29,7 +34,7 @@ template: |
   $CHANGES
 
 autolabeler:
-  - label: "chore"
+  - label: "maintenance"
     files:
       - "*.md"
       - ".github/*"
