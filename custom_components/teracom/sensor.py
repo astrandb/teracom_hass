@@ -102,8 +102,8 @@ class TcwSensor(TcwEntity, SensorEntity):
     """Representation of a sensor."""
 
     @property
-    def state(self):
-        """Return the state of the sensor."""
+    def native_value(self):
+        """Return the native value of the sensor."""
         return self._data.get(self._data_key)
 
     @property
