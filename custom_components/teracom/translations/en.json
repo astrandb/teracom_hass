@@ -18,6 +18,5 @@
         "abort": {
             "already_configured": "Device is already configured"
         }
-    },
-    "title": "Teracom TCW"
+    }
 }
