@@ -27,13 +27,18 @@ class TcwEntity(Entity):
     ):
         """Initialize the sensor."""
         self._data = hass.data[DOMAIN][entry.entry_id]
-        self._unique_id = self._data["id"] + "_" + name_short
+        self._attr_unique_id = self._data["id"] + "_" + name_short
         self._data_key = data_key
-        self._name_long = self._data["hostname"] + " " + name_long
-        self._device_class = device_class
+        self._attr_device_class = device_class
         self._attr_state_class = state_class
-        self._unit_of_measurement = unit_of_measurement
+        self._attr_native_unit_of_measurement = unit_of_measurement
         self._remove_dispatcher = None
+        self._attr_name = name_long
+        self._attr_has_entity_name = True
+        self._attr_device_info = DeviceInfo(
+            connections={(CONNECTION_NETWORK_MAC, self._data["id"])},
+        )
+        self._attr_should_poll = False
 
     async def async_added_to_hass(self):
         """Register callbacks."""
@@ -48,35 +53,6 @@ class TcwEntity(Entity):
 
     async def async_will_remove_from_hass(self):
         self._remove_dispatcher()
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return self._name_long
-
-    @property
-    def unique_id(self):
-        """Return the ID of this device."""
-        return self._unique_id
-
-    @property
-    def device_info(self):
-        return DeviceInfo(
-            connections={(CONNECTION_NETWORK_MAC, self._data["id"])},
-        )
-
-    @property
-    def should_poll(self):
-        return False
-
-    @property
-    def device_class(self):
-        return self._device_class
-
-    @property
-    def unit_of_measurement(self):
-        """Return the unit of measurement."""
-        return self._unit_of_measurement
 
     async def async_update(self):
         """Update the state."""
