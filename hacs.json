@@ -1,14 +1,6 @@
 {
   "name": "Teracom Remote Monitoring",
-  "domains": [
-    "binary_sensor",
-    "sensor",
-    "switch"
-  ],
-  "homeassistant": "2022.9.0",
-  "iot_class": [
-    "Local Poll"
-  ],
-  "zip_release": true,
-  "filename": "teracom_hass.zip"
+  "filename": "teracom_hass.zip",
+  "homeassistant": "2023.4.0",
+  "zip_release": true
 }
