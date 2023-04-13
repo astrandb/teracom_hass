@@ -2,6 +2,7 @@
 {
 	"image": "ghcr.io/ludeeus/devcontainer/integration:stable",
 	"name": "Teracom integration",
+	"context": "..",
 	"appPort": [
 		"9128:8123"
 	],

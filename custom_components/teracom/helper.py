@@ -68,7 +68,7 @@ class TcwApi:
         endpoint = f"http://{self._host}/status.xml?r{relay_no}={to_state}"
 
         rest = RestData(
-            self._hass, method, endpoint, auth, headers, None, payload, verify_ssl
+            self._hass, method, endpoint, "", auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
@@ -87,7 +87,7 @@ class TcwApi:
         endpoint = f"http://{self._host}/status.xml"
 
         rest = RestData(
-            self._hass, method, endpoint, auth, headers, None, payload, verify_ssl
+            self._hass, method, endpoint, "", auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
