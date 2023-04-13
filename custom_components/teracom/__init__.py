@@ -50,9 +50,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     # verify_ssl = DEFAULT_VERIFY_SSL
     headers = {}
     endpoint = f"http://{config.get('host')}/status.xml"
+    encoding = ""
 
     try:
-        rest = RestData(hass, method, endpoint, "", auth, headers, None, payload, False)
+        rest = RestData(
+            hass, method, endpoint, encoding, auth, headers, None, payload, False
+        )
         await rest.async_update()
     except Exception as err:
         raise ConfigEntryNotReady from err

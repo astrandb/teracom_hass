@@ -34,9 +34,10 @@ class TcwHub:
         verify_ssl = False
         headers = {}
         endpoint = f"http://{self.host}/status.xml"
+        encoding = ""
 
         rest = RestData(
-            hass, method, endpoint, auth, headers, None, payload, verify_ssl
+            hass, method, endpoint, encoding, auth, headers, None, payload, verify_ssl
         )
         await rest.async_update()
 
