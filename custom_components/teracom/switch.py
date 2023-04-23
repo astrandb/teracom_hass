@@ -14,25 +14,25 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the entry."""
 
     def get_entities():
-        sensors = []
+        entities = []
         if config_entry.data["model"] == "TCW122B-CM":
             nrx = range(1, 3)
         elif config_entry.data["model"] == "TCW181B-CM":
             nrx = range(1, 9)
         for nox in nrx:
-            sensors.append(
+            entities.append(
                 TcwSwitch(
                     hass,
                     config_entry,
-                    "relay" + str(nox),
-                    "relay" + str(nox),
-                    "Relay " + str(nox),
+                    f"relay{nox}",
+                    f"relay{nox}",
+                    f"Relay {nox}",
                     None,
                     None,
                     None,
                 )
             )
-        return sensors
+        return entities
 
     async_add_entities(await hass.async_add_job(get_entities), True)
 

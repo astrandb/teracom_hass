@@ -33,7 +33,7 @@ class TcwEntity(Entity):
         self._attr_state_class = state_class
         self._attr_native_unit_of_measurement = unit_of_measurement
         self._remove_dispatcher = None
-        self._attr_name = name_long
+        self._attr_translation_key = data_key
         self._attr_has_entity_name = True
         self._attr_device_info = DeviceInfo(
             connections={(CONNECTION_NETWORK_MAC, self._data["id"])},
