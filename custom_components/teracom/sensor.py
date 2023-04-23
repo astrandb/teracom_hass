@@ -1,14 +1,11 @@
 """Sensors"""
 #  import logging
-from homeassistant.components.sensor import STATE_CLASS_MEASUREMENT, SensorEntity
-from homeassistant.const import (
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_TEMPERATURE,
-    DEVICE_CLASS_VOLTAGE,
-    ELECTRIC_POTENTIAL_VOLT,
-    PERCENTAGE,
-    TEMP_CELSIUS,
+from homeassistant.components.sensor import (
+    SensorDeviceClass,
+    SensorEntity,
+    SensorStateClass,
 )
+from homeassistant.const import PERCENTAGE, UnitOfElectricPotential, UnitOfTemperature
 
 from .entity import TcwEntity
 
@@ -28,9 +25,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "temperature1",
                     "temp1",
                     "Temperature 1",
-                    DEVICE_CLASS_TEMPERATURE,
-                    STATE_CLASS_MEASUREMENT,
-                    TEMP_CELSIUS,
+                    SensorDeviceClass.TEMPERATURE,
+                    SensorStateClass.MEASUREMENT,
+                    UnitOfTemperature.CELSIUS,
                 )
             )
             sensors.append(
@@ -40,9 +37,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "temperature2",
                     "temp2",
                     "Temperature 2",
-                    DEVICE_CLASS_TEMPERATURE,
-                    STATE_CLASS_MEASUREMENT,
-                    TEMP_CELSIUS,
+                    SensorDeviceClass.TEMPERATURE,
+                    SensorStateClass.MEASUREMENT,
+                    UnitOfTemperature.CELSIUS,
                 )
             )
             sensors.append(
@@ -52,8 +49,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "humidity1",
                     "hum1",
                     "Humidity 1",
-                    DEVICE_CLASS_HUMIDITY,
-                    STATE_CLASS_MEASUREMENT,
+                    SensorDeviceClass.HUMIDITY,
+                    SensorStateClass.MEASUREMENT,
                     PERCENTAGE,
                 )
             )
@@ -64,8 +61,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "humidity2",
                     "hum2",
                     "Humidity 2",
-                    DEVICE_CLASS_HUMIDITY,
-                    STATE_CLASS_MEASUREMENT,
+                    SensorDeviceClass.HUMIDITY,
+                    SensorStateClass.MEASUREMENT,
                     PERCENTAGE,
                 )
             )
@@ -76,9 +73,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "voltage1",
                     "volt1",
                     "Voltage 1",
-                    DEVICE_CLASS_VOLTAGE,
-                    STATE_CLASS_MEASUREMENT,
-                    ELECTRIC_POTENTIAL_VOLT,
+                    SensorDeviceClass.VOLTAGE,
+                    SensorStateClass.MEASUREMENT,
+                    UnitOfElectricPotential.VOLT,
                 )
             )
             sensors.append(
@@ -88,9 +85,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     "voltage2",
                     "volt2",
                     "Voltage 2",
-                    DEVICE_CLASS_VOLTAGE,
-                    STATE_CLASS_MEASUREMENT,
-                    ELECTRIC_POTENTIAL_VOLT,
+                    SensorDeviceClass.VOLTAGE,
+                    SensorStateClass.MEASUREMENT,
+                    UnitOfElectricPotential.VOLT,
                 )
             )
         return sensors

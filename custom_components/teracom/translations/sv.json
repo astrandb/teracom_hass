@@ -3,9 +3,9 @@
     "step": {
       "user": {
         "data": {
-          "host": "Host",
-          "password": "Password",
-          "username": "Username"
+          "host": "Värd",
+          "password": "Lösenord",
+          "username": "Användarnamn"
         }
       }
     },
@@ -22,38 +22,38 @@
   "entity": {
     "binary_sensor": {
       "digital1": {
-        "name": "Digital input 1"
+        "name": "Digital ingång 1"
       },
       "digital2": {
-        "name": "Digital input 2"
+        "name": "Digital ingång 2"
       }
     },
     "sensor": {
       "temperature1": {
-        "name": "Temperature 1"
+        "name": "Temperatur 1"
       },
       "temperature2": {
-        "name": "Temperature 2"
+        "name": "Temperatur 2"
       },
       "voltage1": {
-        "name": "Voltage 1"
+        "name": "Spänning 1"
       },
       "voltage2": {
-        "name": "Voltage 2"
+        "name": "Spänning 2"
       },
       "humidity1": {
-        "name": "Humidity 1"
+        "name": "Luftfuktighet 1"
       },
       "humidity2": {
-        "name": "Humidity 2"
+        "name": "Luftfuktighet 2"
       }
     },
     "switch": {
       "relay1": {
-        "name": "Relay 1"
+        "name": "Relä 1"
       },
       "relay2": {
-        "name": "Relay 2"
+        "name": "Relä 2"
       }
     }
   }
