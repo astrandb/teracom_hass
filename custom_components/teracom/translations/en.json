@@ -2,10 +2,15 @@
   "config": {
     "step": {
       "user": {
+        "description": "Enter credentials to access the device",
         "data": {
           "host": "Host",
           "password": "Password",
           "username": "Username"
+        },
+        "data_description": {
+          "host": "Hostname or IP address",
+          "username": "Leave username empty if authentication is disabled"
         }
       }
     },

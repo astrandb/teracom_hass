@@ -5,13 +5,28 @@ import xml.etree.ElementTree as ET
 import voluptuous as vol
 from homeassistant import config_entries, core, exceptions
 from homeassistant.components.rest.data import RestData
+from homeassistant.helpers.selector import (
+    TextSelector,
+    TextSelectorConfig,
+    TextSelectorType,
+)
 
 from .const import DOMAIN, SUPPORTED_MODELS  # pylint:disable=unused-import
 
 _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
-    {"host": str, vol.Optional("username"): str, vol.Optional("password"): str}
+    {
+        vol.Required("host"): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.TEXT)
+        ),
+        vol.Optional("username"): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.TEXT)
+        ),
+        vol.Optional("password"): TextSelector(
+            TextSelectorConfig(type=TextSelectorType.PASSWORD)
+        ),
+    }
 )
 
 
