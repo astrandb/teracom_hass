@@ -1,8 +1,16 @@
 {
   "config": {
+    "abort": {
+      "already_configured": "Device is already configured"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "model_not_supported": "Model {model} not supported",
+      "unknown": "Unexpected error"
+    },
     "step": {
       "user": {
-        "description": "Enter credentials to access the device",
         "data": {
           "host": "Host",
           "password": "Password",
@@ -11,17 +19,9 @@
         "data_description": {
           "host": "Hostname or IP address",
           "username": "Leave username empty if authentication is disabled"
-        }
+        },
+        "description": "Enter credentials to access the device"
       }
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "model_not_supported": "Model {model} not supported",
-      "unknown": "Unexpected error"
-    },
-    "abort": {
-      "already_configured": "Device is already configured"
     }
   },
   "entity": {
@@ -34,6 +34,12 @@
       }
     },
     "sensor": {
+      "humidity1": {
+        "name": "Humidity 1"
+      },
+      "humidity2": {
+        "name": "Humidity 2"
+      },
       "temperature1": {
         "name": "Temperature 1"
       },
@@ -45,12 +51,6 @@
       },
       "voltage2": {
         "name": "Voltage 2"
-      },
-      "humidity1": {
-        "name": "Humidity 1"
-      },
-      "humidity2": {
-        "name": "Humidity 2"
       }
     },
     "switch": {

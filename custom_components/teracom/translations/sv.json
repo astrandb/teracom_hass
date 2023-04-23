@@ -1,22 +1,27 @@
 {
   "config": {
+    "abort": {
+      "already_configured": "Enheten är redan konfigurerad"
+    },
+    "error": {
+      "cannot_connect": "Anslutning misslyckades",
+      "invalid_auth": "Ogiltig autentisering",
+      "model_not_supported": "Modell {model} stöds ej",
+      "unknown": "Oväntat fel"
+    },
     "step": {
       "user": {
         "data": {
           "host": "Värd",
           "password": "Lösenord",
           "username": "Användarnamn"
-        }
+        },
+        "data_description": {
+          "host": "Namn eller IP-adress",
+          "username": "Lämna namnfältet tomt om autentisering inte används"
+        },
+        "description": "Ange inloggningsuppgifter"
       }
-    },
-    "error": {
-      "cannot_connect": "Failed to connect",
-      "invalid_auth": "Invalid authentication",
-      "model_not_supported": "Model {model} not supported",
-      "unknown": "Unexpected error"
-    },
-    "abort": {
-      "already_configured": "Device is already configured"
     }
   },
   "entity": {
@@ -29,6 +34,12 @@
       }
     },
     "sensor": {
+      "humidity1": {
+        "name": "Luftfuktighet 1"
+      },
+      "humidity2": {
+        "name": "Luftfuktighet 2"
+      },
       "temperature1": {
         "name": "Temperatur 1"
       },
@@ -40,12 +51,6 @@
       },
       "voltage2": {
         "name": "Spänning 2"
-      },
-      "humidity1": {
-        "name": "Luftfuktighet 1"
-      },
-      "humidity2": {
-        "name": "Luftfuktighet 2"
       }
     },
     "switch": {
