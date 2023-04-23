@@ -7,6 +7,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.const import PERCENTAGE, UnitOfElectricPotential, UnitOfTemperature
 
+from .const import TCW122B_CM
 from .entity import TcwEntity
 
 #  _LOGGER = logging.getLogger(__name__)
@@ -17,7 +18,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     def get_entities():
         sensors = []
-        if config_entry.data["model"] == "TCW122B-CM":
+        if config_entry.data["model"] == TCW122B_CM:
             sensors.append(
                 TcwSensor(
                     hass,

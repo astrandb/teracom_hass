@@ -26,11 +26,20 @@
   },
   "entity": {
     "binary_sensor": {
+      "digital": {
+        "name": "Digital input"
+      },
       "digital1": {
         "name": "Digital input 1"
       },
       "digital2": {
         "name": "Digital input 2"
+      },
+      "digital3": {
+        "name": "Digital input 3"
+      },
+      "digital4": {
+        "name": "Digital input 4"
       }
     },
     "sensor": {
@@ -59,6 +68,12 @@
       },
       "relay2": {
         "name": "Relay 2"
+      },
+      "relay3": {
+        "name": "Relay 3"
+      },
+      "relay4": {
+        "name": "Relay 4"
       }
     }
   }

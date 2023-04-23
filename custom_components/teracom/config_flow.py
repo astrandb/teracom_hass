@@ -1,29 +1,41 @@
 """Config flow for Teracom TCW integration."""
 import logging
-import xml.etree.ElementTree as ET
 
 import voluptuous as vol
-from homeassistant import config_entries, core, exceptions
-from homeassistant.components.rest.data import RestData
+import xmltodict
+from homeassistant import config_entries
+
+# from homeassistant.components.rest.data import RestData
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.core import HomeAssistant
+from homeassistant.data_entry_flow import AbortFlow
+from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.selector import (
     TextSelector,
     TextSelectorConfig,
     TextSelectorType,
 )
 
-from .const import DOMAIN, SUPPORTED_MODELS  # pylint:disable=unused-import
+from .const import (  # pylint:disable=unused-import
+    DOMAIN,
+    SUPPORTED_MODELS,
+    TCW122B_CM,
+    TCW181B_CM,
+)
+from .pyteracom import TeracomAPI
 
 _LOGGER = logging.getLogger(__name__)
 
 STEP_USER_DATA_SCHEMA = vol.Schema(
     {
-        vol.Required("host"): TextSelector(
+        vol.Required(CONF_HOST): TextSelector(
             TextSelectorConfig(type=TextSelectorType.TEXT)
         ),
-        vol.Optional("username"): TextSelector(
+        vol.Optional(CONF_USERNAME): TextSelector(
             TextSelectorConfig(type=TextSelectorType.TEXT)
         ),
-        vol.Optional("password"): TextSelector(
+        vol.Optional(CONF_PASSWORD): TextSelector(
             TextSelectorConfig(type=TextSelectorType.PASSWORD)
         ),
     }
@@ -40,32 +52,29 @@ class TcwHub:
         """Initialize."""
         self.host = host
         self.xmldata = ""
+        self.data_dict = {}
 
     async def authenticate(self, hass, username, password) -> bool:
         """Test if we can authenticate with the host."""
 
-        method = "GET"
-        payload = auth = None
-        verify_ssl = False
-        headers = {}
-        endpoint = f"http://{self.host}/status.xml"
-        encoding = ""
+        websession = async_get_clientsession(hass)
 
-        rest = RestData(
-            hass, method, endpoint, encoding, auth, headers, None, payload, verify_ssl
-        )
-        await rest.async_update()
+        api = TeracomAPI(websession=websession, host=self.host)
+        auth = "" if username is None else f"?a={username}:{password}"
+        result = await api.request(method="GET", endpoint=f"status.xml{auth}")
+        result.raise_for_status()
 
-        if rest.data is None:
-            _LOGGER.error("Unable to fetch data from device")
-            return False
+        try:
+            result_dict = xmltodict.parse(await result.text())
+        except Exception as exc:  # pylint: disable=broad-except
+            raise HomeAssistantError("Cannot parse response") from exc
 
-        self.xmldata = rest.data
-
+        self.data_dict = result_dict
+        self.xmldata = await result.text()
         return True
 
 
-async def validate_input(hass: core.HomeAssistant, data):
+async def validate_input(hass: HomeAssistant, data):
     """Validate the user input allows us to connect.
 
     Data has the keys from STEP_USER_DATA_SCHEMA with values provided by the user.
@@ -73,9 +82,7 @@ async def validate_input(hass: core.HomeAssistant, data):
 
     hub = TcwHub(data["host"])
 
-    if not await hub.authenticate(
-        hass, data.get("username", None), data.get("password", None)
-    ):
+    if not await hub.authenticate(hass, data.get("username"), data.get("password")):
         raise InvalidAuth
 
     # If you cannot connect:
@@ -84,18 +91,29 @@ async def validate_input(hass: core.HomeAssistant, data):
     # InvalidAuth
 
     # Return info that you want to store in the config entry.
-    root = ET.fromstring(hub.xmldata)
-    if root.tag == "Monitor":
-        _LOGGER.debug("ID: %s", root.find("ID").text)
+    # root = ET.fromstring(hub.xmldata)
+    # if root.tag == "Monitor":
+    #     _LOGGER.debug("ID: %s", root.find("ID").text)
 
-    model = root.find("Device").text.strip()
+    # print(hub.data_dict)
+    model = hub.data_dict["Monitor"].get("Device")
+    if model is None:
+        model = hub.data_dict["Monitor"]["DeviceInfo"].get("DeviceName")
     _LOGGER.debug("Device: %s", model)
+
     if model not in SUPPORTED_MODELS:
         _LOGGER.debug("Model not supported: %s", model)
         raise ModelNotSupported(model)
 
-    mac = root.find("ID").text.replace(":", "")
-    hostname = root.find("Hostname").text.strip().title()
+    if model in (TCW122B_CM, TCW181B_CM):
+        mac = hub.data_dict["Monitor"].get("ID")
+        hostname = hub.data_dict["Monitor"].get("Hostname")
+    else:
+        mac = hub.data_dict["Monitor"]["DeviceInfo"].get("ID")
+        hostname = hub.data_dict["Monitor"]["DeviceInfo"].get("HostName")
+    mac = mac.replace(":", "")
+    hostname = hostname.strip().title()
+    # hostname = root.find("Hostname").text.strip().title()
     title = hostname + " - " + mac
     return {"title": title, "id": mac, "hostname": hostname, "model": model}
 
@@ -120,6 +138,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         try:
             info = await validate_input(self.hass, user_input)
             await self.async_set_unique_id(info["id"])
+            self._abort_if_unique_id_configured()
             user_input["model"] = info["model"]
             return self.async_create_entry(title=info["title"], data=user_input)
         except CannotConnect:
@@ -127,28 +146,30 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         except InvalidAuth:
             errors["base"] = "invalid_auth"
         except ModelNotSupported as mns:
-            _LOGGER.warning("Model %s not supported", mns.args[0])
+            _LOGGER.debug("Model %s not supported", mns.args[0])
             errors["host"] = "model_not_supported"
-            placeholders["model"] = mns.args[0]  # Does not work
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception")
+            placeholders = {"model": mns.args[0]}
+        except AbortFlow:
+            errors["base"] = "already_configured"
+        except Exception as ex:  # pylint: disable=broad-except
+            _LOGGER.exception("Unexpected exception: %s", ex)
             errors["base"] = "unknown"
 
         return self.async_show_form(
             step_id="user",
             data_schema=STEP_USER_DATA_SCHEMA,
             errors=errors,
-            description_placeholders=placeholders,  # Does not work
+            description_placeholders=placeholders,
         )
 
 
-class CannotConnect(exceptions.HomeAssistantError):
+class CannotConnect(HomeAssistantError):
     """Error to indicate we cannot connect."""
 
 
-class InvalidAuth(exceptions.HomeAssistantError):
+class InvalidAuth(HomeAssistantError):
     """Error to indicate there is invalid auth."""
 
 
-class ModelNotSupported(exceptions.HomeAssistantError):
+class ModelNotSupported(HomeAssistantError):
     """Error to indicate model not supported."""

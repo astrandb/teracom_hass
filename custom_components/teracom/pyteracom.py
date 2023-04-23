@@ -1,4 +1,4 @@
-"""pyteracom - library for teracom integration for Home Assistant."""
+"""pyteracom - Library for Teracom integration for Home Assistant."""
 
 # Move to pypi.org when stable
 
@@ -29,7 +29,6 @@ class TeracomAPI:
             headers = dict(headers)
             kwargs.pop("headers")
 
-        print(f"http://{self._host}/{endpoint}")
         try:
             res = await self._websession.request(
                 method,
@@ -39,29 +38,50 @@ class TeracomAPI:
                 **kwargs,
                 headers=headers,
             )
-        except:
+        except Exception:  # pylint: disable=broad-except
             _LOGGER.debug("History: %s", res.history)
-            print(f"Exc: {res}")
-        print(await res.text())
         res.raise_for_status()
         return res
 
-    async def get_xml(self):
-        """Get xml data."""
-        res = await self._websession.get(
-            "http://192.168.0.37/index.htm",
-        )
-        _LOGGER.debug("Response: %s", res)
-        print(res.status)
-        print(await res.text())
-        return await res.text()
-
-    async def get_data(self):
+    async def get_data(self, username=None, password=None):
         """Get data from api."""
         try:
-            res = await self.request("GET")
-            return await res.json()
+            auth = "" if username is None else f"?a={username}:{password}"
+            response = await self.request("GET", f"status.xml{auth}")
         except ClientResponseError as exc:
             _LOGGER.error(
                 "API get_data failed. Status: %s, - %s", exc.code, exc.message
             )
+        return await response.text()
+
+    async def set_relay(self, relay_no, to_state, username=None, password=None):
+        """Set the relay state."""
+        try:
+            auth = "" if username is None else f"?a={username}:{password}&"
+            auth = "?a=admin:admin&"
+            response = await self.request(
+                "GET", f"status.xml{auth}r{relay_no}={to_state}"
+            )
+        except ClientResponseError as exc:
+            _LOGGER.error(
+                "API set_relay failed. Status: %s, - %s", exc.code, exc.message
+            )
+        return await response.text()
+
+    async def set_relay_g2(
+        self, username=None, password=None, relay_no=3, to_value="off"
+    ):
+        """Set relay state."""
+        print(f"relay_no={relay_no}")
+        try:
+            auth = "" if username is None else f"?a={username}:{password}&"
+            auth = "?a=admin:admin&"
+            cmd = "ron=" if to_value == "on" else "rof="
+            rel_no = 2 ** (int(relay_no) - 1)
+            print(f"status.xml{auth}{cmd}{rel_no}")
+            response = await self.request("GET", f"status.xml{auth}{cmd}{rel_no}")
+        except ClientResponseError as exc:
+            _LOGGER.error(
+                "API set_relay failed. Status: %s, - %s", exc.code, exc.message
+            )
+        return await response.text()

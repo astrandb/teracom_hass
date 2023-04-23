@@ -7,7 +7,8 @@
       "cannot_connect": "Anslutning misslyckades",
       "invalid_auth": "Ogiltig autentisering",
       "model_not_supported": "Modell {model} stöds ej",
-      "unknown": "Oväntat fel"
+      "unknown": "Oväntat fel",
+      "already_configured": "Enheten är redan konfigurerad"
     },
     "step": {
       "user": {
@@ -26,11 +27,20 @@
   },
   "entity": {
     "binary_sensor": {
+      "digital": {
+        "name": "Digital ingång"
+      },
       "digital1": {
         "name": "Digital ingång 1"
       },
       "digital2": {
         "name": "Digital ingång 2"
+      },
+      "digital3": {
+        "name": "Digital ingång 3"
+      },
+      "digital4": {
+        "name": "Digital ingång 4"
       }
     },
     "sensor": {
@@ -59,6 +69,12 @@
       },
       "relay2": {
         "name": "Relä 2"
+      },
+      "relay3": {
+        "name": "Relä 3"
+      },
+      "relay4": {
+        "name": "Relä 4"
       }
     }
   }
