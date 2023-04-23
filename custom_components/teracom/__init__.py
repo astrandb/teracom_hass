@@ -38,7 +38,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         data = await _hassdata["api"].get_data(
             config.get(CONF_USERNAME), config.get(CONF_PASSWORD)
         )
-        _LOGGER.debug("Calling dispatcher_send")
+        # _LOGGER.debug("Calling dispatcher_send")
         parse_response(data)
         dispatcher_send(hass, SIGNAL_UPDATE_TERACOM)
 
