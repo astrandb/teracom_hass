@@ -4,6 +4,8 @@
 
 Custom component to support Teracom TCW monitoring devices.
 
+Supported models: TCW122B-CM, TCW181B-CM, TCW241, TCW242
+
 ## Installation
 
 There are 2 different methods for installing the custom component
@@ -14,6 +16,7 @@ _While this component can be installed by HACS, it is not included in the defaul
 
 1. Add this repository as a custom repository inside HACS settings. Make sure you select `Integration` as Category.
 2. Install the component from the Integrations Overview page.
+3. Back out and restart Home Assistant
 
 ### Git installation
 
@@ -22,17 +25,10 @@ _While this component can be installed by HACS, it is not included in the defaul
 3. Create a `custom_components` folder of it does not exist, navigate down into it after creation.
 4. Execute the following command: `git clone https://github.com/astrandb/teracom_hass.git`
 
-## Configuration
+## Setup
 
-Configuration is done through in Configuration > Integrations where you first configure it and then set the options for what you want to monitor.
+Add the integration in  Settings->Integrations. Enter address and login credentials if needed. All available entites will be created.
 
 ## Development
 
-This project uses `black` and `isort` for code formatting and `flake8` for linting.
-Always run
-
-```
-make lint
-```
-
-Before pushing your changes
+It is recommended to use the included development container. PRs are welcome.
