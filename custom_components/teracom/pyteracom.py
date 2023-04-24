@@ -14,10 +14,14 @@ _LOGGER = logging.getLogger(__name__)
 class TeracomAPI:
     """Class to get data from Teracom devices."""
 
-    def __init__(self, websession: ClientSession, host: str) -> None:
+    def __init__(
+        self, websession: ClientSession, host: str, username=None, password=None
+    ) -> None:
         """Initialize."""
         self._websession = websession
         self._host = host
+        self._username = username
+        self._password = password
 
     async def request(self, method, endpoint="", **kwargs) -> ClientResponse:
         """Make a request."""
@@ -30,7 +34,7 @@ class TeracomAPI:
             kwargs.pop("headers")
 
         try:
-            res = await self._websession.request(
+            response = await self._websession.request(
                 method,
                 f"http://{self._host}/{endpoint}",
                 allow_redirects=True,
@@ -38,15 +42,19 @@ class TeracomAPI:
                 **kwargs,
                 headers=headers,
             )
-        except Exception:  # pylint: disable=broad-except
-            _LOGGER.debug("History: %s", res.history)
-        res.raise_for_status()
-        return res
+        except Exception as exc:  # pylint: disable=broad-except
+            _LOGGER.debug("Request exception: %s", exc)
+        response.raise_for_status()
+        return response
 
-    async def get_data(self, username=None, password=None):
+    async def get_data(self):
         """Get data from api."""
         try:
-            auth = "" if username is None else f"?a={username}:{password}"
+            auth = (
+                ""
+                if self._username is None
+                else f"?a={self._username}:{self._password}"
+            )
             response = await self.request("GET", f"status.xml{auth}")
         except ClientResponseError as exc:
             _LOGGER.error(
@@ -54,13 +62,16 @@ class TeracomAPI:
             )
         return await response.text()
 
-    async def set_relay(self, relay_no, to_state, username=None, password=None):
+    async def set_relay(self, relay_no, to_state):
         """Set the relay state."""
         try:
-            auth = "" if username is None else f"?a={username}:{password}&"
-            auth = "?a=admin:admin&"
+            auth = (
+                ""
+                if self._username is None
+                else f"a={self._username}:{self._password}&"
+            )
             response = await self.request(
-                "GET", f"status.xml{auth}r{relay_no}={to_state}"
+                "GET", f"status.xml?{auth}r{relay_no}={to_state}"
             )
         except ClientResponseError as exc:
             _LOGGER.error(
@@ -68,18 +79,17 @@ class TeracomAPI:
             )
         return await response.text()
 
-    async def set_relay_g2(
-        self, username=None, password=None, relay_no=3, to_value="off"
-    ):
+    async def set_relay_g2(self, relay_no=3, to_value="off"):
         """Set relay state."""
-        print(f"relay_no={relay_no}")
         try:
-            auth = "" if username is None else f"?a={username}:{password}&"
-            auth = "?a=admin:admin&"
+            auth = (
+                ""
+                if self._username is None
+                else f"a={self._username}:{self._password}&"
+            )
             cmd = "ron=" if to_value == "on" else "rof="
             rel_no = 2 ** (int(relay_no) - 1)
-            print(f"status.xml{auth}{cmd}{rel_no}")
-            response = await self.request("GET", f"status.xml{auth}{cmd}{rel_no}")
+            response = await self.request("GET", f"status.xml?{auth}{cmd}{rel_no}")
         except ClientResponseError as exc:
             _LOGGER.error(
                 "API set_relay failed. Status: %s, - %s", exc.code, exc.message

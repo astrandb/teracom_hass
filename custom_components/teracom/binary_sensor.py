@@ -1,6 +1,6 @@
 """Binary sensors"""
 
-from .const import TCW122B_CM, TCW181B_CM, TCW241
+from .const import TCW122B_CM, TCW181B_CM, TCW241, TCW242
 from .entity import TcwEntity
 
 
@@ -15,8 +15,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     hass,
                     config_entry,
                     "digital1",
-                    "dig1",
-                    "Digital input 1",
                     None,
                     None,
                     None,
@@ -27,8 +25,6 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     hass,
                     config_entry,
                     "digital2",
-                    "dig2",
-                    "Digital input 2",
                     None,
                     None,
                     None,
@@ -40,62 +36,23 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                     hass,
                     config_entry,
                     "digital",
-                    "dig",
-                    "Digital input",
                     None,
                     None,
                     None,
                 )
             )
-        elif config_entry.data["model"] == TCW241:
-            sensors.append(
-                TcwBinarySensor(
-                    hass,
-                    config_entry,
-                    "digital1",
-                    "dig1",
-                    "Digital input 1",
-                    None,
-                    None,
-                    None,
+        elif config_entry.data["model"] in (TCW241,):
+            for i in range(1, 5):
+                sensors.append(
+                    TcwBinarySensor(
+                        hass,
+                        config_entry,
+                        f"digital{i}",
+                        None,
+                        None,
+                        None,
+                    )
                 )
-            )
-            sensors.append(
-                TcwBinarySensor(
-                    hass,
-                    config_entry,
-                    "digital2",
-                    "dig2",
-                    "Digital input 2",
-                    None,
-                    None,
-                    None,
-                ),
-            )
-            sensors.append(
-                TcwBinarySensor(
-                    hass,
-                    config_entry,
-                    "digital3",
-                    "dig3",
-                    "Digital input 3",
-                    None,
-                    None,
-                    None,
-                ),
-            )
-            sensors.append(
-                TcwBinarySensor(
-                    hass,
-                    config_entry,
-                    "digital4",
-                    "dig4",
-                    "Digital input 4",
-                    None,
-                    None,
-                    None,
-                ),
-            )
         return sensors
 
     async_add_entities(await hass.async_add_job(get_entities), True)

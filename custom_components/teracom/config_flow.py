@@ -59,18 +59,18 @@ class TcwHub:
 
         websession = async_get_clientsession(hass)
 
-        api = TeracomAPI(websession=websession, host=self.host)
-        auth = "" if username is None else f"?a={username}:{password}"
-        result = await api.request(method="GET", endpoint=f"status.xml{auth}")
-        result.raise_for_status()
+        api = TeracomAPI(
+            websession=websession, host=self.host, username=username, password=password
+        )
+        result_text = await api.get_data()
 
         try:
-            result_dict = xmltodict.parse(await result.text())
+            result_dict = xmltodict.parse(result_text)
         except Exception as exc:  # pylint: disable=broad-except
             raise HomeAssistantError("Cannot parse response") from exc
 
         self.data_dict = result_dict
-        self.xmldata = await result.text()
+        self.xmldata = result_text
         return True
 
 
@@ -95,7 +95,6 @@ async def validate_input(hass: HomeAssistant, data):
     # if root.tag == "Monitor":
     #     _LOGGER.debug("ID: %s", root.find("ID").text)
 
-    # print(hub.data_dict)
     model = hub.data_dict["Monitor"].get("Device")
     if model is None:
         model = hub.data_dict["Monitor"]["DeviceInfo"].get("DeviceName")
@@ -112,8 +111,7 @@ async def validate_input(hass: HomeAssistant, data):
         mac = hub.data_dict["Monitor"]["DeviceInfo"].get("ID")
         hostname = hub.data_dict["Monitor"]["DeviceInfo"].get("HostName")
     mac = mac.replace(":", "")
-    hostname = hostname.strip().title()
-    # hostname = root.find("Hostname").text.strip().title()
+    hostname = hostname.strip()
     title = hostname + " - " + mac
     return {"title": title, "id": mac, "hostname": hostname, "model": model}
 

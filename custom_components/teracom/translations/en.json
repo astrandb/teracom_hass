@@ -43,6 +43,18 @@
       }
     },
     "sensor": {
+      "analog1": {
+        "name": "Analog input 1"
+      },
+      "analog2": {
+        "name": "Analog input 2"
+      },
+      "analog3": {
+        "name": "Analog input 3"
+      },
+      "analog4": {
+        "name": "Analog input 4"
+      },
       "humidity1": {
         "name": "Humidity 1"
       },
@@ -74,6 +86,18 @@
       },
       "relay4": {
         "name": "Relay 4"
+      },
+      "relay5": {
+        "name": "Relay 5"
+      },
+      "relay6": {
+        "name": "Relay 6"
+      },
+      "relay7": {
+        "name": "Relay 7"
+      },
+      "relay8": {
+        "name": "Relay 8"
       }
     }
   }

@@ -15,7 +15,7 @@ from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 
-from .const import DOMAIN, SIGNAL_UPDATE_TERACOM, TCW122B_CM, TCW181B_CM, TCW241
+from .const import DOMAIN, SIGNAL_UPDATE_TERACOM, TCW122B_CM, TCW181B_CM, TCW241, TCW242
 from .pyteracom import TeracomAPI
 
 _LOGGER = logging.getLogger(__name__)
@@ -35,9 +35,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
     async def poll_update(event_time):
         #  _LOGGER.debug("Entered pollupdate")
-        data = await _hassdata["api"].get_data(
-            config.get(CONF_USERNAME), config.get(CONF_PASSWORD)
-        )
+        data = await _hassdata["api"].get_data()
         # _LOGGER.debug("Calling dispatcher_send")
         parse_response(data)
         dispatcher_send(hass, SIGNAL_UPDATE_TERACOM)
@@ -79,35 +77,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _hassdata["digital2"] = root.find("DigitalInput2").text == "CLOSED"
             _hassdata["relay1"] = root.find("Relay1").text == "ON"
             _hassdata["relay2"] = root.find("Relay2").text == "ON"
-        elif model == TCW181B_CM:
+        if model == TCW181B_CM:
             _hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
             for nox in range(1, 9):
                 _hassdata[f"relay{nox}"] = root.find(f"Relay{nox}").text == "ON"
-        elif model == TCW241:
-            _hassdata["digital1"] = (
-                _hassdata["data_dict"]["Monitor"]["DI"]["DI1"]["valuebin"] == "0"
-            )
-            _hassdata["digital2"] = (
-                _hassdata["data_dict"]["Monitor"]["DI"]["DI2"]["valuebin"] == "0"
-            )
-            _hassdata["digital3"] = (
-                _hassdata["data_dict"]["Monitor"]["DI"]["DI3"]["valuebin"] == "0"
-            )
-            _hassdata["digital4"] = (
-                _hassdata["data_dict"]["Monitor"]["DI"]["DI4"]["valuebin"] == "0"
-            )
-            _hassdata["relay1"] = (
-                _hassdata["data_dict"]["Monitor"]["R"]["R1"]["valuebin"] == "1"
-            )
-            _hassdata["relay2"] = (
-                _hassdata["data_dict"]["Monitor"]["R"]["R2"]["valuebin"] == "1"
-            )
-            _hassdata["relay3"] = (
-                _hassdata["data_dict"]["Monitor"]["R"]["R3"]["valuebin"] == "1"
-            )
-            _hassdata["relay4"] = (
-                _hassdata["data_dict"]["Monitor"]["R"]["R4"]["valuebin"] == "1"
-            )
+        if model in (TCW241,):
+            for i in range(1, 5):
+                _hassdata[f"analog{i}"] = _hassdata["data_dict"]["Monitor"]["AI"][
+                    f"AI{i}"
+                ]["value"]
+            for i in range(1, 5):
+                _hassdata[f"digital{i}"] = (
+                    _hassdata["data_dict"]["Monitor"]["DI"][f"DI{i}"]["valuebin"] == "0"
+                )
+        if model in (TCW241, TCW242):
+            for i in range(1, 5):
+                _hassdata[f"relay{i}"] = (
+                    _hassdata["data_dict"]["Monitor"]["R"][f"R{i}"]["valuebin"] == "1"
+                )
 
     hass.data[DOMAIN][entry.entry_id] = {}
     _hassdata = hass.data[DOMAIN][entry.entry_id]
@@ -115,27 +102,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     config = entry.data
 
     websession = async_get_clientsession(hass)
-    _hassdata["api"] = TeracomAPI(websession=websession, host=config.get(CONF_HOST))
-    username = config.get(CONF_USERNAME)
-    password = config.get(CONF_PASSWORD)
-    auth = "" if config.get("username") is None else f"?a={username}:{password}"
-    result = await _hassdata["api"].request(method="GET", endpoint=f"status.xml{auth}")
-    result.raise_for_status()
+    _hassdata["api"] = TeracomAPI(
+        websession=websession,
+        host=config.get(CONF_HOST),
+        username=config.get(CONF_USERNAME),
+        password=config.get(CONF_PASSWORD),
+    )
+    result_text = await _hassdata["api"].get_data()
 
     try:
-        result_dict = xmltodict.parse(await result.text())
+        result_dict = xmltodict.parse(result_text)
     except Exception as exc:  # pylint: disable=broad-except
         raise HomeAssistantError("Cannot parse response") from exc
 
     _hassdata["data_dict"] = result_dict
-    _hassdata["xml"] = await result.text()
+    _hassdata["xml"] = result_text
 
     if config.get("model") in (TCW122B_CM, TCW181B_CM):
         _hassdata["id"] = _hassdata["data_dict"]["Monitor"]["ID"].replace(":", "")
         _hassdata["device"] = _hassdata["data_dict"]["Monitor"]["Device"].strip()
-        _hassdata["hostname"] = (
-            _hassdata["data_dict"]["Monitor"]["Hostname"].strip().title()
-        )
+        _hassdata["hostname"] = _hassdata["data_dict"]["Monitor"]["Hostname"].strip()
         _hassdata["fw"] = _hassdata["data_dict"]["Monitor"]["FW"].strip()
     else:
         _hassdata["id"] = _hassdata["data_dict"]["Monitor"]["DeviceInfo"]["ID"].replace(
@@ -144,9 +130,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _hassdata["device"] = _hassdata["data_dict"]["Monitor"]["DeviceInfo"][
             "DeviceName"
         ].strip()
-        _hassdata["hostname"] = (
-            _hassdata["data_dict"]["Monitor"]["DeviceInfo"]["HostName"].strip().title()
-        )
+        _hassdata["hostname"] = _hassdata["data_dict"]["Monitor"]["DeviceInfo"][
+            "HostName"
+        ].strip()
         _hassdata["fw"] = _hassdata["data_dict"]["Monitor"]["DeviceInfo"][
             "FwVer"
         ].strip()
@@ -161,19 +147,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         configuration_url=f"http://{config.get('host')}",
     )
     _LOGGER.debug("Adding or updating teracom device %s", _hassdata["id"])
-    # device_registry = await hass.helpers.device_registry.async_get_registry()
     device_registry = dr.async_get(hass)
     device_registry.async_get_or_create(**device_info)
 
-    data = await _hassdata["api"].get_data(
-        config.get(CONF_USERNAME), config.get(CONF_PASSWORD)
-    )
+    data = await _hassdata["api"].get_data()
     parse_response(data)
 
-    for component in PLATFORMS:
-        hass.async_create_task(
-            hass.config_entries.async_forward_entry_setup(entry, component)
-        )
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     async_track_time_interval(hass, poll_update, SCAN_INTERVAL)
     dispatcher_send(hass, SIGNAL_UPDATE_TERACOM)
@@ -182,14 +162,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Unload a config entry."""
-    unload_ok = all(
-        await asyncio.gather(
-            *[
-                hass.config_entries.async_forward_entry_unload(entry, component)
-                for component in PLATFORMS
-            ]
-        )
-    )
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unload_ok:
         hass.data[DOMAIN].pop(entry.entry_id)
 
