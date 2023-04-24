@@ -24,7 +24,9 @@ PLATFORMS = ["sensor", "binary_sensor", "switch"]
 SCAN_INTERVAL = timedelta(seconds=15)
 
 
-async def async_setup(hass: HomeAssistant, config: dict):
+async def async_setup(
+    hass: HomeAssistant, config: dict
+):  # pylint: disable=unused-argument
     """Set up the Teracom TCW component."""
     hass.data[DOMAIN] = {}
     return True
@@ -33,7 +35,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     """Set up Teracom TCW from a config entry."""
 
-    async def poll_update(event_time):
+    async def poll_update(event_time):  # pylint: disable=unused-argument
         #  _LOGGER.debug("Entered pollupdate")
         data = await _hassdata["api"].get_data()
         # _LOGGER.debug("Calling dispatcher_send")
@@ -90,6 +92,15 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 _hassdata[f"digital{i}"] = (
                     _hassdata["data_dict"]["Monitor"]["DI"][f"DI{i}"]["valuebin"] == "0"
                 )
+            for i in range(1, 9):
+                value = _hassdata["data_dict"]["Monitor"]["S"][f"S{i}"]["item1"][
+                    "value"
+                ]
+                _hassdata[f"sensor{i}"] = value if value != "---" else None
+                value = _hassdata["data_dict"]["Monitor"]["S"][f"S{i}"]["item2"][
+                    "value"
+                ]
+                _hassdata[f"sensor{i}b"] = value if value != "---" else None
         if model in (TCW241, TCW242):
             for i in range(1, 5):
                 _hassdata[f"relay{i}"] = (

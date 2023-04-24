@@ -61,6 +61,54 @@
       "humidity2": {
         "name": "Humidity 2"
       },
+      "sensor1": {
+        "name": "Sensor 1"
+      },
+      "sensor1b": {
+        "name": "Sensor 1B"
+      },
+      "sensor2": {
+        "name": "Sensor 2"
+      },
+      "sensor2b": {
+        "name": "Sensor 2B"
+      },
+      "sensor3": {
+        "name": "Sensor 3"
+      },
+      "sensor3b": {
+        "name": "Sensor 3B"
+      },
+      "sensor4": {
+        "name": "Sensor 4"
+      },
+      "sensor4b": {
+        "name": "Sensor 4B"
+      },
+      "sensor5": {
+        "name": "Sensor 5"
+      },
+      "sensor5b": {
+        "name": "Sensor 5B"
+      },
+      "sensor6": {
+        "name": "Sensor 6"
+      },
+      "sensor6b": {
+        "name": "Sensor 6B"
+      },
+      "sensor7": {
+        "name": "Sensor 7"
+      },
+      "sensor7b": {
+        "name": "Sensor 7B"
+      },
+      "sensor8": {
+        "name": "Sensor 8"
+      },
+      "sensor8b": {
+        "name": "Sensor 8B"
+      },
       "temperature1": {
         "name": "Temperature 1"
       },

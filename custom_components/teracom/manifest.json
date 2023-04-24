@@ -1,9 +1,7 @@
 {
   "domain": "teracom",
   "name": "Teracom TCW",
-  "after_dependencies": [
-    "rest"
-  ],
+  "after_dependencies": [],
   "codeowners": [
     "@astrandb"
   ],
