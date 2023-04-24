@@ -12,6 +12,6 @@
   "issue_tracker": "https://github.com/astrandb/teracom_hass/issues",
   "requirements": [],
   "ssdp": [],
-  "version": "0.1.9",
+  "version": "0.1.10",
   "zeroconf": []
 }
