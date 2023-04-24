@@ -4,8 +4,6 @@ import logging
 import voluptuous as vol
 import xmltodict
 from homeassistant import config_entries
-
-# from homeassistant.components.rest.data import RestData
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import AbortFlow
