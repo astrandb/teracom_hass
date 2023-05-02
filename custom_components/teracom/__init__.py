@@ -118,7 +118,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         username=config.get(CONF_USERNAME),
         password=config.get(CONF_PASSWORD),
     )
-    result_text = await _hassdata["api"].get_data()
+    try:
+        result_text = await _hassdata["api"].get_data()
+    except Exception as exc:
+        raise ConfigEntryNotReady from exc
 
     try:
         result_dict = xmltodict.parse(result_text)
