@@ -14,13 +14,13 @@ echo -n "
 logger:
   default: info
   logs:
-    homeassistant.components.viva: debug
+    homeassistant.components.teracom: debug
 " >> config/configuration.yaml
 fi
 
 
 # Set the path to custom_components
-## This let's us have the structure we want <root>/custom_components/ake_dev
+## This let's us have the structure we want <root>/custom_components/teracom
 ## while at the same time have Home Assistant configuration inside <root>/config
 ## without resulting to symlinks.
 export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
