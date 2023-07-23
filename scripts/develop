@@ -14,7 +14,7 @@ echo -n "
 logger:
   default: info
   logs:
-    homeassistant.components.teracom: debug
+    custom_components.teracom: debug
 " >> config/configuration.yaml
 fi
 
