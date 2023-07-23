@@ -1,1 +1,1 @@
-"""Helpers for Teracom integration"""
+"""Helpers for Teracom integration."""

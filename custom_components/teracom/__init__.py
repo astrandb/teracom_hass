@@ -1,9 +1,10 @@
 """The Teracom TCW integration."""
-import logging
-import xml.etree.ElementTree as ET
 from datetime import timedelta
+import logging
 
+import defusedxml.ElementTree as ET
 import xmltodict
+
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant

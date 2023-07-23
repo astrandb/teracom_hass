@@ -1,6 +1,6 @@
-"""Binary sensors"""
+"""Binary sensors."""
 
-from .const import TCW122B_CM, TCW181B_CM, TCW241, TCW242
+from .const import TCW122B_CM, TCW181B_CM, TCW241
 from .entity import TcwEntity
 
 

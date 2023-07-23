@@ -1,4 +1,4 @@
-"""Sensors"""
+"""Sensors."""
 #  import logging
 from homeassistant.components.sensor import (
     SensorDeviceClass,
@@ -12,7 +12,7 @@ from homeassistant.const import (
     UnitOfTemperature,
 )
 
-from .const import DOMAIN, TCW122B_CM, TCW241, TCW242
+from .const import DOMAIN, TCW122B_CM, TCW241
 from .entity import TcwEntity
 
 #  _LOGGER = logging.getLogger(__name__)

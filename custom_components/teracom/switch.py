@@ -1,10 +1,9 @@
-"""Switches"""
+"""Switches."""
 import logging
 
 from homeassistant.components.switch import SwitchEntity
-from homeassistant.helpers.dispatcher import dispatcher_send
 
-from .const import SIGNAL_UPDATE_TERACOM, TCW122B_CM, TCW181B_CM, TCW241, TCW242
+from .const import TCW122B_CM, TCW181B_CM, TCW241, TCW242
 from .entity import TcwEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,9 +56,11 @@ class TcwSwitch(TcwEntity, SwitchEntity):
 
     @property
     def is_on(self):
+        """Return state of switch."""
         return self._data.get(self._data_key)
 
     async def async_turn_on(self, **kwargs):
+        """Turn switch on."""
         _LOGGER.debug(" Turn_on %s", self.name)
         await self._data["api"].set_relay(self._data_key[-1], 1)
         self._data[self._data_key] = True
@@ -67,6 +68,7 @@ class TcwSwitch(TcwEntity, SwitchEntity):
         # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
 
     async def async_turn_off(self, **kwargs):
+        """Turn switch off."""
         _LOGGER.debug(" Turn_off %s", self.name)
         await self._data["api"].set_relay(self._data_key[-1], 0)
         self._data[self._data_key] = False
@@ -79,9 +81,11 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
 
     @property
     def is_on(self):
+        """Return state of switch."""
         return self._data.get(self._data_key)
 
     async def async_turn_on(self, **kwargs):
+        """Turn switch on."""
         _LOGGER.debug(" Turn_on %s", self.name)
         await self._data["api"].set_relay_g2(relay_no=self._data_key[-1], to_value="on")
         self._data[self._data_key] = True
@@ -89,6 +93,7 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
         # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
 
     async def async_turn_off(self, **kwargs):
+        """Turn switch off."""
         _LOGGER.debug(" Turn_off %s", self.name)
         await self._data["api"].set_relay_g2(
             relay_no=self._data_key[-1], to_value="off"
