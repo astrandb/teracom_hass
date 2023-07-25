@@ -16,7 +16,7 @@ categories:
     labels:
       - "dependency"
   - title: "Maintenance"
-    labels: 
+    labels:
       - "chore"
       - "maintenance"
   - title: "Translations"

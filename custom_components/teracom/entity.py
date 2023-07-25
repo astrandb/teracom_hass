@@ -50,6 +50,7 @@ class TcwEntity(Entity):
         self.async_schedule_update_ha_state(True)
 
     async def async_will_remove_from_hass(self):
+        """Remove from hass."""
         self._remove_dispatcher()
 
     async def async_update(self):
