@@ -30,6 +30,21 @@
             "type": "shell",
             "command": "scripts/lint",
             "problemMatcher": []
+        },
+        {
+            "label": "Pre-commit run --all",
+            "type": "shell",
+            "command": "pre-commit run --all",
+            "problemMatcher": [],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            }
         }
     ]
 }
