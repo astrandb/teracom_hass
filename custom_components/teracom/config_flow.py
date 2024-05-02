@@ -1,4 +1,5 @@
 """Config flow for Teracom TCW integration."""
+
 import logging
 
 import voluptuous as vol
@@ -148,8 +149,8 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             placeholders = {"model": mns.args[0]}
         except AbortFlow:
             errors["base"] = "already_configured"
-        except Exception as ex:  # pylint: disable=broad-except
-            _LOGGER.exception("Unexpected exception: %s", ex)
+        except Exception:  # pylint: disable=broad-except
+            _LOGGER.exception("Unexpected exception: %s")
             errors["base"] = "unknown"
 
         return self.async_show_form(

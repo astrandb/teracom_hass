@@ -1,4 +1,5 @@
 """Diagnostics support for Teracom."""
+
 from __future__ import annotations
 
 from homeassistant.components.diagnostics import async_redact_data
@@ -16,11 +17,9 @@ async def async_get_config_entry_diagnostics(
 ) -> dict:
     """Return diagnostics for a config entry."""
 
-    diagnostics_data = {
+    return {
         "config_entry_data": async_redact_data(dict(config_entry.data), TO_REDACT),
         "data": async_redact_data(
             hass.data[DOMAIN][config_entry.entry_id]["data_dict"], TO_REDACT
         ),
     }
-
-    return diagnostics_data
