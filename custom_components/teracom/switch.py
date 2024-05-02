@@ -1,7 +1,11 @@
 """Switches."""
+
 import logging
 
 from homeassistant.components.switch import SwitchEntity
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import TCW122B_CM, TCW181B_CM, TCW241, TCW242
 from .entity import TcwEntity
@@ -9,7 +13,11 @@ from .entity import TcwEntity
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+):
     """Set up the entry."""
 
     def get_entities():
@@ -23,8 +31,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
         else:
             return entities
         if config_entry.data["model"] in (TCW122B_CM, TCW181B_CM):
-            for nox in nrx:
-                entities.append(
+            entities.extend(
+                [
                     TcwSwitch(
                         hass,
                         config_entry,
@@ -33,10 +41,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         None,
                         None,
                     )
-                )
+                    for nox in nrx
+                ]
+            )
         if config_entry.data["model"] in (TCW241, TCW242):
-            for nox in nrx:
-                entities.append(
+            entities.extend(
+                [
                     TcwSwitchGen2(
                         hass,
                         config_entry,
@@ -45,10 +55,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         None,
                         None,
                     )
-                )
+                    for nox in nrx
+                ]
+            )
         return entities
 
-    async_add_entities(await hass.async_add_job(get_entities), True)
+    async_add_entities(get_entities())
 
 
 class TcwSwitch(TcwEntity, SwitchEntity):

@@ -1,16 +1,20 @@
 """Sensors."""
+
 #  import logging
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
     SensorStateClass,
 )
+from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
     PERCENTAGE,
     UnitOfElectricCurrent,
     UnitOfElectricPotential,
     UnitOfTemperature,
 )
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN, TCW122B_CM, TCW241
 from .entity import TcwEntity
@@ -18,14 +22,18 @@ from .entity import TcwEntity
 #  _LOGGER = logging.getLogger(__name__)
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+):
     """Set up the entry."""
 
     def get_entities():
         sensors = []
         if config_entry.data["model"] == TCW122B_CM:
-            for i in range(1, 3):
-                sensors.append(
+            sensors.extend(
+                [
                     TcwSensor(
                         hass,
                         config_entry,
@@ -34,9 +42,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         SensorStateClass.MEASUREMENT,
                         UnitOfTemperature.CELSIUS,
                     )
-                )
-            for i in range(1, 3):
-                sensors.append(
+                    for i in range(1, 3)
+                ]
+            )
+            sensors.extend(
+                [
                     TcwSensor(
                         hass,
                         config_entry,
@@ -45,9 +55,11 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         SensorStateClass.MEASUREMENT,
                         PERCENTAGE,
                     )
-                )
-            for i in range(1, 3):
-                sensors.append(
+                    for i in range(1, 3)
+                ]
+            )
+            sensors.extend(
+                [
                     TcwSensor(
                         hass,
                         config_entry,
@@ -56,11 +68,13 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         SensorStateClass.MEASUREMENT,
                         UnitOfElectricPotential.VOLT,
                     )
-                )
+                    for i in range(1, 3)
+                ]
+            )
 
         if config_entry.data["model"] in (TCW241,):
-            for i in range(1, 5):
-                sensors.append(
+            sensors.extend(
+                [
                     TcwSensor(
                         hass,
                         config_entry,
@@ -69,7 +83,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         SensorStateClass.MEASUREMENT,
                         UnitOfElectricPotential.VOLT,
                     )
-                )
+                    for i in range(1, 5)
+                ]
+            )
             for i in range(1, 9):
                 device_class = None
                 native_unit = None
@@ -136,7 +152,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
         return sensors
 
-    async_add_entities(await hass.async_add_job(get_entities), True)
+    async_add_entities(get_entities())
 
 
 class TcwSensor(TcwEntity, SensorEntity):

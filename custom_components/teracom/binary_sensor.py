@@ -1,10 +1,18 @@
 """Binary sensors."""
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
 from .const import TCW122B_CM, TCW181B_CM, TCW241
 from .entity import TcwEntity
 
 
-async def async_setup_entry(hass, config_entry, async_add_entities):
+async def async_setup_entry(
+    hass: HomeAssistant,
+    config_entry: ConfigEntry,
+    async_add_entities: AddEntitiesCallback,
+):
     """Set up the binary sensors."""
 
     def get_entities():
@@ -42,8 +50,8 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                 )
             )
         elif config_entry.data["model"] in (TCW241,):
-            for i in range(1, 5):
-                sensors.append(
+            sensors.extend(
+                [
                     TcwBinarySensor(
                         hass,
                         config_entry,
@@ -52,10 +60,12 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
                         None,
                         None,
                     )
-                )
+                    for i in range(1, 5)
+                ]
+            )
         return sensors
 
-    async_add_entities(await hass.async_add_job(get_entities), True)
+    async_add_entities(get_entities())
 
 
 class TcwBinarySensor(TcwEntity):
