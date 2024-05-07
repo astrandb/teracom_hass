@@ -1,4 +1,5 @@
 """The Teracom TCW integration."""
+
 from datetime import timedelta
 import logging
 
@@ -6,7 +7,7 @@ import defusedxml.ElementTree as ET
 import xmltodict
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
+from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME, Platform
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr
@@ -14,19 +15,18 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.dispatcher import dispatcher_send
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
+from homeassistant.helpers.typing import ConfigType
 
 from .const import DOMAIN, SIGNAL_UPDATE_TERACOM, TCW122B_CM, TCW181B_CM, TCW241, TCW242
 from .pyteracom import TeracomAPI
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS = ["sensor", "binary_sensor", "switch"]
+PLATFORMS = [Platform.SENSOR, Platform.BINARY_SENSOR, Platform.SWITCH]
 SCAN_INTERVAL = timedelta(seconds=15)
 
 
-async def async_setup(
-    hass: HomeAssistant, config: dict
-):  # pylint: disable=unused-argument
+async def async_setup(hass: HomeAssistant, config: ConfigType):
     """Set up the Teracom TCW component."""
     hass.data[DOMAIN] = {}
     return True
