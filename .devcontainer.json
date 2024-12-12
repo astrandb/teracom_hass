@@ -41,7 +41,8 @@
                     "files.trimTrailingWhitespace": false
                 },
                 "i18nJsonEditor.forceKeyUPPERCASE": false,
-                "i18nJsonEditor.supportedFolders": ["translations", "i18n"]
+                "i18nJsonEditor.supportedFolders": ["translations", "i18n"],
+                "terminal.integrated.defaultProfile.linux": "zsh"
             }
         }
     },
