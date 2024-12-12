@@ -16,7 +16,7 @@ from homeassistant.const import (
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import DOMAIN, TCW122B_CM, TCW241
+from .const import DOMAIN, TCW
 from .entity import TcwEntity
 
 #  _LOGGER = logging.getLogger(__name__)
@@ -31,7 +31,7 @@ async def async_setup_entry(
 
     def get_entities():
         sensors = []
-        if config_entry.data["model"] == TCW122B_CM:
+        if config_entry.data["model"] == TCW.TCW122B_CM:
             sensors.extend(
                 [
                     TcwSensor(
@@ -72,7 +72,22 @@ async def async_setup_entry(
                 ]
             )
 
-        if config_entry.data["model"] in (TCW241,):
+        if config_entry.data["model"] in (TCW.TCW220,):
+            sensors.extend(
+                [
+                    TcwSensor(
+                        hass,
+                        config_entry,
+                        f"analog{i}",
+                        SensorDeviceClass.VOLTAGE,
+                        SensorStateClass.MEASUREMENT,
+                        UnitOfElectricPotential.VOLT,
+                    )
+                    for i in range(1, 3)
+                ]
+            )
+
+        if config_entry.data["model"] in (TCW.TCW241,):
             sensors.extend(
                 [
                     TcwSensor(
@@ -86,6 +101,11 @@ async def async_setup_entry(
                     for i in range(1, 5)
                 ]
             )
+
+        if config_entry.data["model"] in (
+            TCW.TCW220,
+            TCW.TCW241,
+        ):
             for i in range(1, 9):
                 device_class = None
                 native_unit = None

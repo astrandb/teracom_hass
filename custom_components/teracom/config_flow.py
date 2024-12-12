@@ -17,12 +17,7 @@ from homeassistant.helpers.selector import (
     TextSelectorType,
 )
 
-from .const import (  # pylint:disable=unused-import
-    DOMAIN,
-    SUPPORTED_MODELS,
-    TCW122B_CM,
-    TCW181B_CM,
-)
+from .const import DOMAIN, TCW  # pylint:disable=unused-import
 from .pyteracom import TeracomAPI
 
 _LOGGER = logging.getLogger(__name__)
@@ -100,11 +95,11 @@ async def validate_input(hass: HomeAssistant, data):
         model = hub.data_dict["Monitor"]["DeviceInfo"].get("DeviceName")
     _LOGGER.debug("Device: %s", model)
 
-    if model not in SUPPORTED_MODELS:
+    if model not in TCW:
         _LOGGER.debug("Model not supported: %s", model)
         raise ModelNotSupported(model)
 
-    if model in (TCW122B_CM, TCW181B_CM):
+    if model in (TCW.TCW122B_CM, TCW.TCW181B_CM):
         mac = hub.data_dict["Monitor"].get("ID")
         hostname = hub.data_dict["Monitor"].get("Hostname")
     else:

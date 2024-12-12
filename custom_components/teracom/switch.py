@@ -7,7 +7,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import TCW122B_CM, TCW181B_CM, TCW241, TCW242
+from .const import TCW
 from .entity import TcwEntity
 
 _LOGGER = logging.getLogger(__name__)
@@ -22,15 +22,15 @@ async def async_setup_entry(
 
     def get_entities():
         entities = []
-        if config_entry.data["model"] == TCW122B_CM:
+        if config_entry.data["model"] in (TCW.TCW220, TCW.TCW122B_CM):
             nrx = range(1, 3)
-        elif config_entry.data["model"] == TCW181B_CM:
+        elif config_entry.data["model"] == TCW.TCW181B_CM:
             nrx = range(1, 9)
-        elif config_entry.data["model"] in (TCW241, TCW242):
+        elif config_entry.data["model"] in (TCW.TCW241, TCW.TCW242):
             nrx = range(1, 5)
         else:
             return entities
-        if config_entry.data["model"] in (TCW122B_CM, TCW181B_CM):
+        if config_entry.data["model"] in (TCW.TCW122B_CM, TCW.TCW181B_CM):
             entities.extend(
                 [
                     TcwSwitch(
@@ -44,7 +44,7 @@ async def async_setup_entry(
                     for nox in nrx
                 ]
             )
-        if config_entry.data["model"] in (TCW241, TCW242):
+        if config_entry.data["model"] in (TCW.TCW220, TCW.TCW241, TCW.TCW242):
             entities.extend(
                 [
                     TcwSwitchGen2(
