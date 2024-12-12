@@ -1,10 +1,17 @@
 """Constants for the Teracom TCW integration."""
 
+from enum import StrEnum
+
 DOMAIN = "teracom"
 SIGNAL_UPDATE_TERACOM = "signal_update_teracom"
-TCW122B_CM = "TCW122B-CM"
-TCW181B_CM = "TCW181B-CM"
-TCW241 = "TCW241"
-TCW242 = "TCW242"
-SUPPORTED_MODELS = {TCW122B_CM, TCW181B_CM, TCW241, TCW242}
 VERSION = "2024.5.0"
+
+
+class TCW(StrEnum):
+    """Supported TCW models."""
+
+    TCW122B_CM = "TCW122B-CM"
+    TCW181B_CM = "TCW181B-CM"
+    TCW220 = "TCW220"
+    TCW241 = "TCW241"
+    TCW242 = "TCW242"

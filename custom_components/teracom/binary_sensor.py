@@ -4,7 +4,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
-from .const import TCW122B_CM, TCW181B_CM, TCW241
+from .const import TCW
 from .entity import TcwEntity
 
 
@@ -17,7 +17,7 @@ async def async_setup_entry(
 
     def get_entities():
         sensors = []
-        if config_entry.data["model"] == TCW122B_CM:
+        if config_entry.data["model"] == TCW.TCW122B_CM:
             sensors.append(
                 TcwBinarySensor(
                     hass,
@@ -38,7 +38,7 @@ async def async_setup_entry(
                     None,
                 )
             )
-        elif config_entry.data["model"] == TCW181B_CM:
+        elif config_entry.data["model"] == TCW.TCW181B_CM:
             sensors.append(
                 TcwBinarySensor(
                     hass,
@@ -49,7 +49,21 @@ async def async_setup_entry(
                     None,
                 )
             )
-        elif config_entry.data["model"] in (TCW241,):
+        elif config_entry.data["model"] in (TCW.TCW220,):
+            sensors.extend(
+                [
+                    TcwBinarySensor(
+                        hass,
+                        config_entry,
+                        f"digital{i}",
+                        None,
+                        None,
+                        None,
+                    )
+                    for i in range(1, 3)
+                ]
+            )
+        elif config_entry.data["model"] in (TCW.TCW241,):
             sensors.extend(
                 [
                     TcwBinarySensor(

@@ -4,7 +4,7 @@
 
 Custom component to support Teracom TCW monitoring devices.
 
-Supported models: TCW122B-CM, TCW181B-CM, TCW241, TCW242
+Supported models: TCW122B-CM, TCW181B-CM, TCW220, TCW241, TCW242
 
 ## Installation
 

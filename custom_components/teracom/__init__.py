@@ -17,7 +17,7 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
 
-from .const import DOMAIN, SIGNAL_UPDATE_TERACOM, TCW122B_CM, TCW181B_CM, TCW241, TCW242
+from .const import DOMAIN, SIGNAL_UPDATE_TERACOM, TCW
 from .pyteracom import TeracomAPI
 
 _LOGGER = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         _hassdata["data_dict"] = result_dict
         root = ET.fromstring(data)
         model = config["model"]
-        if model == TCW122B_CM:
+        if model == TCW.TCW122B_CM:
             _hassdata["temperature1"] = (
                 None
                 if root.find("Temperature1").text == "---"
@@ -79,11 +79,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             _hassdata["digital2"] = root.find("DigitalInput2").text == "CLOSED"
             _hassdata["relay1"] = root.find("Relay1").text == "ON"
             _hassdata["relay2"] = root.find("Relay2").text == "ON"
-        if model == TCW181B_CM:
+
+        if model == TCW.TCW181B_CM:
             _hassdata["digital"] = root.find("DigitalInput").text == "CLOSED"
             for nox in range(1, 9):
                 _hassdata[f"relay{nox}"] = root.find(f"Relay{nox}").text == "ON"
-        if model in (TCW241,):
+
+        if model in (TCW.TCW241,):
             for i in range(1, 5):
                 _hassdata[f"analog{i}"] = _hassdata["data_dict"]["Monitor"]["AI"][
                     f"AI{i}"
@@ -101,7 +103,31 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                     "value"
                 ]
                 _hassdata[f"sensor{i}b"] = value if value != "---" else None
-        if model in (TCW241, TCW242):
+
+        if model in (TCW.TCW220,):
+            for i in range(1, 3):
+                _hassdata[f"relay{i}"] = (
+                    _hassdata["data_dict"]["Monitor"]["R"][f"R{i}"]["valuebin"] == "1"
+                )
+            for i in range(1, 3):
+                _hassdata[f"analog{i}"] = _hassdata["data_dict"]["Monitor"]["AI"][
+                    f"AI{i}"
+                ]["value"]
+            for i in range(1, 3):
+                _hassdata[f"digital{i}"] = (
+                    _hassdata["data_dict"]["Monitor"]["DI"][f"DI{i}"]["valuebin"] == "0"
+                )
+            for i in range(1, 9):
+                value = _hassdata["data_dict"]["Monitor"]["S"][f"S{i}"]["item1"][
+                    "value"
+                ]
+                _hassdata[f"sensor{i}"] = value if value != "---" else None
+                value = _hassdata["data_dict"]["Monitor"]["S"][f"S{i}"]["item2"][
+                    "value"
+                ]
+                _hassdata[f"sensor{i}b"] = value if value != "---" else None
+
+        if model in (TCW.TCW241, TCW.TCW242):
             for i in range(1, 5):
                 _hassdata[f"relay{i}"] = (
                     _hassdata["data_dict"]["Monitor"]["R"][f"R{i}"]["valuebin"] == "1"
@@ -132,7 +158,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     _hassdata["data_dict"] = result_dict
     _hassdata["xml"] = result_text
 
-    if config.get("model") in (TCW122B_CM, TCW181B_CM):
+    if config.get("model") in (TCW.TCW122B_CM, TCW.TCW181B_CM):
         _hassdata["id"] = _hassdata["data_dict"]["Monitor"]["ID"].replace(":", "")
         _hassdata["device"] = _hassdata["data_dict"]["Monitor"]["Device"].strip()
         _hassdata["hostname"] = _hassdata["data_dict"]["Monitor"]["Hostname"].strip()
