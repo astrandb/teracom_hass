@@ -1,6 +1,7 @@
-colorlog==6.8.2
+colorlog==6.9.0
 homeassistant
 pip>=21.3.1
-ruff==0.8.3
-pre-commit==4.0.1
-bumpver==2023.1129
+ruff==0.14.0
+pre-commit==4.3.0
+bumpver==2025.1131
+xmltodict

@@ -318,7 +318,6 @@ select = [
     "S317",   # suspicious-xml-sax-usage
     "S318",   # suspicious-xml-mini-dom-usage
     "S319",   # suspicious-xml-pull-dom-usage
-    "S320",   # suspicious-xmle-tree-usage
     "S601",   # paramiko-call
     "S602",   # subprocess-popen-with-shell-equals-true
     "S604",   # call-with-shell-equals-true
@@ -362,7 +361,7 @@ ignore = [
     "TRY003",  # Avoid specifying long messages outside the exception class
     "TRY400",  # Use `logging.exception` instead of `logging.error`
     # Ignored due to performance: https://github.com/charliermarsh/ruff/issues/2923
-    "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
+    # "UP038", # Use `X | Y` in `isinstance` call instead of `(X, Y)`
     # Ignored due to incompatible with mypy: https://github.com/python/mypy/issues/15238
     "UP040", # Checks for use of TypeAlias annotation for declaring type aliases.
 

@@ -1,6 +1,6 @@
 {
     "name": "astrandb/dev-teracom",
-    "image": "mcr.microsoft.com/devcontainers/python:1-3.12",
+    "image": "mcr.microsoft.com/devcontainers/python:1-3.13",
     "postCreateCommand": "scripts/setup",
     "appPort": ["9128:8123"],
     "portsAttributes": {
@@ -49,6 +49,6 @@
     "remoteUser": "vscode",
     "features": {
         "ghcr.io/devcontainers/features/rust:1": {},
-        "ghcr.io/devcontainers-contrib/features/ffmpeg-apt-get:1": {}
+        "ghcr.io/devcontainers-extra/features/ffmpeg-apt-get:1": {}
     }
 }

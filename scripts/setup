@@ -4,6 +4,7 @@ set -e
 
 cd "$(dirname "$0")/.."
 
+sudo apt-get update
 sudo apt-get install -y --no-install-recommends \
     libpcap-dev \
     libturbojpeg0
