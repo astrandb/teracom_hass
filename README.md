@@ -17,7 +17,7 @@ Supported models: TCW122B-CM, TCW181B-CM, TCW220, TCW241, TCW242
 
 ### Manual download and setup method
 
-- Copy all files from custom_components/teracom_hass in this repo to your config custom_components/teracom_hass
+- Copy all files from custom_components/teracom in this repo to your config custom_components/teracom
 - Restart Home Assistant
 - Go to Settings->Devices & Services->Integrations and press Add Integration. Search for Teracom and select it. Follow the prompts.
 
