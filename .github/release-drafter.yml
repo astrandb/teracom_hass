@@ -4,30 +4,43 @@ exclude-labels:
   - "skip-changelog"
 categories:
   - title: "New Features"
-    labels:
-      - "feature"
-      - "enhancement"
+    when:
+      labels:
+        - "feature"
+        - "enhancement"
   - title: "Bug Fixes"
-    labels:
-      - "fix"
-      - "bugfix"
-      - "bug"
+    when:
+      labels:
+        - "fix"
+        - "bugfix"
+        - "bug"
   - title: "Dependencies"
-    labels:
-      - "dependency"
+    collapse-after: 2
+    when:
+      labels:
+        - "dependencies"
+        - "dependency"
   - title: "Maintenance"
-    labels:
-      - "chore"
-      - "maintenance"
+    when:
+      labels:
+        - "chore"
+        - "maintenance"
   - title: "Translations"
-    labels:
-      - "translation"
+    when:
+      labels:
+        - "translation"
 change-template: "- $TITLE @$AUTHOR (#$NUMBER)"
 change-title-escapes: '\<*_&' # You can add # and @ to disable mentions, and add ` to disable code blocks.
 
 template: |
-  [![Downloads for this release](https://img.shields.io/github/downloads/astrandb/teracom_hass/v$RESOLVED_VERSION/total.svg)](https://github.com/astrandb/teracom_hass/releases/v$RESOLVED_VERSION)
+  [![Downloads for this release](https://img.shields.io/github/downloads/$OWNER/$REPOSITORY/v$RESOLVED_VERSION/total.svg)](https://github.com/$OWNER/$REPOSITORY/releases/v$RESOLVED_VERSION)
 
+  <!--
+  ### Checklist for release
+  - Run pre-commit checks
+  - Run make bump - select proper variant in Makefile
+  - Review the draft below and update if needed
+  -->
 
   ## Changes
 
@@ -41,3 +54,20 @@ autolabeler:
   - label: "bugfix"
     title:
       - "/fix/i"
+  - label: "code quality"
+    title:
+      - "lint"
+  - label: "translation"
+    title:
+      - "Lokalise:"
+    files:
+      - "**/translations/*.json"
+  - label: "development tools"
+    files:
+      - ".devcontainer/*"
+      - ".devcontainer.json"
+      - "Makefile"
+      - "setup.cfg"
+      - "pyproject.toml"
+      - ".ruff.toml"
+      - ".pre-commit-config.yaml"
