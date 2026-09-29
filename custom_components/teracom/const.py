@@ -4,7 +4,7 @@ from enum import StrEnum
 
 DOMAIN = "teracom"
 SIGNAL_UPDATE_TERACOM = "signal_update_teracom"
-VERSION = "2026.9.0"
+VERSION = "2026.9.1"
 
 
 class TCW(StrEnum):
