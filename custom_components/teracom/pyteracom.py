@@ -95,3 +95,34 @@ class TeracomAPI:
                 "API set_relay failed. Status: %s, - %s", exc.code, exc.message
             )
         return await response.text()
+
+    async def pulse_relay(self, relay_no):
+        """Send pulse command to relay."""
+        try:
+            auth = (
+                ""
+                if self._username is None
+                else f"a={self._username}:{self._password}&"
+            )
+            response = await self.request("GET", f"status.xml?{auth}pl{relay_no}=1")
+        except ClientResponseError as exc:
+            _LOGGER.error(
+                "API send pulse failed. Status: %s, - %s", exc.code, exc.message
+            )
+        return await response.text()
+
+    async def pulse_relay_g2(self, relay_no=3):
+        """Send pulse command to relay Gen 2."""
+        try:
+            auth = (
+                ""
+                if self._username is None
+                else f"a={self._username}:{self._password}&"
+            )
+            rel_no = 2 ** (int(relay_no) - 1)
+            response = await self.request("GET", f"status.xml?{auth}rpl={rel_no}")
+        except ClientResponseError as exc:
+            _LOGGER.error(
+                "API pulse_relay_g2 failed. Status: %s, - %s", exc.code, exc.message
+            )
+        return await response.text()

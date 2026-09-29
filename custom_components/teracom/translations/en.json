@@ -42,6 +42,32 @@
         "name": "Digital input 4"
       }
     },
+    "button": {
+      "relay1": {
+        "name": "Pulse relay 1"
+      },
+      "relay2": {
+        "name": "Pulse relay 2"
+      },
+      "relay3": {
+        "name": "Pulse relay 3"
+      },
+      "relay4": {
+        "name": "Pulse relay 4"
+      },
+      "relay5": {
+        "name": "Pulse relay 5"
+      },
+      "relay6": {
+        "name": "Pulse relay 6"
+      },
+      "relay7": {
+        "name": "Pulse relay 7"
+      },
+      "relay8": {
+        "name": "Pulse relay 8"
+      }
+    },
     "sensor": {
       "analog1": {
         "name": "Analog input 1"

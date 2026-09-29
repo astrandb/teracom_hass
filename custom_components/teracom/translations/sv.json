@@ -26,6 +26,32 @@
     }
   },
   "entity": {
+    "button": {
+      "relay1": {
+        "name": "Puls relä 1"
+      },
+      "relay2": {
+        "name": "Puls relä 2"
+      },
+      "relay3": {
+        "name": "Puls relä 3"
+      },
+      "relay4": {
+        "name": "Puls relä 4"
+      },
+      "relay5": {
+        "name": "Puls relä 5"
+      },
+      "relay6": {
+        "name": "Puls relä 6"
+      },
+      "relay7": {
+        "name": "Puls relä 7"
+      },
+      "relay8": {
+        "name": "Puls relä 8"
+      }
+    },
     "binary_sensor": {
       "digital": {
         "name": "Digital ingång"

@@ -98,7 +98,7 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
 
     async def async_turn_on(self, **kwargs):
         """Turn switch on."""
-        _LOGGER.debug(" Turn_on %s", self.name)
+        _LOGGER.debug("Turn_on %s", self.name)
         await self._data["api"].set_relay_g2(relay_no=self._data_key[-1], to_value="on")
         self._data[self._data_key] = True
         self.async_write_ha_state()
@@ -106,7 +106,7 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
 
     async def async_turn_off(self, **kwargs):
         """Turn switch off."""
-        _LOGGER.debug(" Turn_off %s", self.name)
+        _LOGGER.debug("Turn_off %s", self.name)
         await self._data["api"].set_relay_g2(
             relay_no=self._data_key[-1], to_value="off"
         )
