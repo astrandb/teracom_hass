@@ -12,8 +12,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.dispatcher import dispatcher_send
-from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.helpers.typing import ConfigType
 
@@ -141,7 +141,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     websession = async_get_clientsession(hass)
     _hassdata["api"] = TeracomAPI(
         websession=websession,
-        host=config.get(CONF_HOST),
+        host=config[CONF_HOST],
         username=config.get(CONF_USERNAME),
         password=config.get(CONF_PASSWORD),
     )
@@ -183,12 +183,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
         model=_hassdata["device"],
         name=_hassdata["hostname"],
         sw_version=_hassdata["fw"],
-        config_entry_id=entry.entry_id,
         configuration_url=f"http://{config.get('host')}",
     )
     _LOGGER.debug("Adding or updating teracom device %s", _hassdata["id"])
     device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(**device_info)
+    device_registry.async_get_or_create(config_entry_id=entry.entry_id, **device_info)
 
     data = await _hassdata["api"].get_data()
     parse_response(data)
