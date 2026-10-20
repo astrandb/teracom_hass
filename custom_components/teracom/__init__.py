@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 import logging
+from typing import Any
 
 import defusedxml.ElementTree as ET
 import xmltodict
@@ -134,7 +135,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
                 )
 
     hass.data[DOMAIN][entry.entry_id] = {}
-    _hassdata = hass.data[DOMAIN][entry.entry_id]
+    _hassdata: dict[str, Any] = hass.data[DOMAIN][entry.entry_id]
 
     config = entry.data
 
