@@ -3,5 +3,5 @@ homeassistant
 pip>=21.3.1
 ruff==0.16.9
 pre-commit==4.6.2
-bumpver==2025.1131
+bumpver==2026.1132
 xmltodict
