@@ -77,7 +77,6 @@ class TcwSwitch(TcwEntity, SwitchEntity):
         await self._data["api"].set_relay(self._data_key[-1], 1)
         self._data[self._data_key] = True
         self.async_write_ha_state()
-        # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
 
     async def async_turn_off(self, **kwargs):
         """Turn switch off."""
@@ -85,7 +84,6 @@ class TcwSwitch(TcwEntity, SwitchEntity):
         await self._data["api"].set_relay(self._data_key[-1], 0)
         self._data[self._data_key] = False
         self.async_write_ha_state()
-        # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
 
 
 class TcwSwitchGen2(TcwEntity, SwitchEntity):
@@ -102,7 +100,6 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
         await self._data["api"].set_relay_g2(relay_no=self._data_key[-1], to_value="on")
         self._data[self._data_key] = True
         self.async_write_ha_state()
-        # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
 
     async def async_turn_off(self, **kwargs):
         """Turn switch off."""
@@ -112,4 +109,3 @@ class TcwSwitchGen2(TcwEntity, SwitchEntity):
         )
         self._data[self._data_key] = False
         self.async_write_ha_state()
-        # dispatcher_send(self.hass, SIGNAL_UPDATE_TERACOM)
