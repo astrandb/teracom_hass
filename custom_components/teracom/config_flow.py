@@ -5,7 +5,7 @@ import logging
 import probatio
 import xmltodict
 
-from homeassistant import config_entries
+from homeassistant.config_entries import ConfigFlow, ConfigFlowResult
 from homeassistant.const import CONF_HOST, CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import AbortFlow
@@ -111,13 +111,12 @@ async def validate_input(hass: HomeAssistant, data):
     return {"title": title, "id": mac, "hostname": hostname, "model": model}
 
 
-class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class TeracomConfigFlow(ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Teracom TCW."""
 
     VERSION = 1
-    CONNECTION_CLASS = config_entries.CONN_CLASS_LOCAL_POLL
 
-    async def async_step_user(self, user_input=None):
+    async def async_step_user(self, user_input=None) -> ConfigFlowResult:
         """Handle the initial step."""
         if user_input is None:
             return self.async_show_form(

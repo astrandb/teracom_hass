@@ -2,6 +2,10 @@
   "domain": "teracom",
   "name": "Teracom TCW",
   "after_dependencies": [],
+  "categories": [
+    "computers_network.monitoring",
+    "sensors"
+  ],
   "codeowners": [
     "@astrandb"
   ],
