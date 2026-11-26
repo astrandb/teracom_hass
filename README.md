@@ -6,6 +6,7 @@ Custom component to support Teracom TCW monitoring devices.
 
 Supported models: TCW122B-CM, TCW181B-CM, TCW220, TCW241, TCW242
 
+<!-- ha-marketplace:exclude-start -->
 ## Installation
 
 ### Preferred download and setup method
@@ -21,9 +22,10 @@ Supported models: TCW122B-CM, TCW181B-CM, TCW220, TCW241, TCW242
 - Restart Home Assistant
 - Go to Settings->Devices & Services->Integrations and press Add Integration. Search for Teracom and select it. Follow the prompts.
 
+<!-- ha-marketplace:exclude-end -->
 ## Setup
 
-Add the integration in  Settings->Integrations. Enter address and login credentials if needed. All available entites will be created.
+Add the integration in  Settings->Integrations. Enter device address and login credentials if needed. All available entites will be created.
 
 ## Development
 
