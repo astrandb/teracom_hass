@@ -190,7 +190,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     )
     _LOGGER.debug("Adding or updating teracom device %s", _hassdata["id"])
     device_registry = dr.async_get(hass)
-    device_registry.async_get_or_create(config_entry_id=entry.entry_id, **device_info)
+    device_registry.async_get_or_create_from_info(
+        config_entry_id=entry.entry_id, device_info=device_info
+    )
 
     data = await _hassdata["api"].get_data()
     parse_response(data)
